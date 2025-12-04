@@ -1,0 +1,116 @@
+<template>
+    <lightning-card title="Audit Trail Viewer" icon-name="standard:log">
+        <div slot="actions" style="display: flex; gap: 10px;">
+            <lightning-button
+                label="Filters"
+                icon-name="utility:filterList"
+                onclick={handleToggleFilters}
+                variant="border-filled">
+            </lightning-button>
+            <lightning-button
+                label="Refresh"
+                icon-name="utility:refresh"
+                onclick={handleRefresh}
+                variant="brand"
+                disabled={isLoading}>
+            </lightning-button>
+        </div>
+
+        <!-- Filters Section -->
+        <template if:true={showFilters}>
+            <div class="slds-m-around_medium slds-box slds-box_x-small">
+                <div class="slds-grid slds-wrap slds-gap_medium">
+                    <div class="slds-size_1-of-3">
+                        <lightning-input
+                            type="date"
+                            label="Start Date"
+                            value={startDate}
+                            onchange={handleStartDateChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-size_1-of-3">
+                        <lightning-input
+                            type="date"
+                            label="End Date"
+                            value={endDate}
+                            onchange={handleEndDateChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-size_1-of-3">
+                        <lightning-input
+                            type="text"
+                            label="Org Connection"
+                            placeholder="Enter Org ID"
+                            value={selectedOrgConnection}
+                            onchange={handleOrgConnectionChange}>
+                        </lightning-input>
+                    </div>
+                </div>
+                <div class="slds-m-top_medium" style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <lightning-button
+                        label="Clear"
+                        onclick={handleClearFilters}
+                        variant="neutral">
+                    </lightning-button>
+                    <lightning-button
+                        label="Apply Filters"
+                        onclick={handleApplyFilters}
+                        variant="brand">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Main Content -->
+        <div class="slds-m-around_medium">
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading audit trails..."></lightning-spinner>
+            </template>
+
+            <!-- Error Alert -->
+            <template if:true={error}>
+                <lightning-alert
+                    variant="error"
+                    title="Error"
+                    message={error}
+                    closable
+                    onclose={handleClearFilters}>
+                </lightning-alert>
+            </template>
+
+            <!-- Record Count -->
+            <template if:true={hasAuditTrails}>
+                <div class="slds-m-bottom_medium">
+                    <lightning-badge label={recordCount}></lightning-badge>
+                    <span class="slds-m-left_small">Records found</span>
+                </div>
+            </template>
+
+            <!-- Data Table -->
+            <template if:true={hasAuditTrails}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={auditTrails}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}
+                    class="audit-trail-table">
+                </lightning-datatable>
+            </template>
+
+            <!-- No Data Message -->
+            <template if:false={hasAuditTrails}>
+                <div class="slds-align_absolute-center slds-m-vertical_large">
+                    <lightning-icon
+                        icon-name="utility:inbox"
+                        alternative-text="No records"
+                        size="large"
+                        style="color: #a4a4a4;">
+                    </lightning-icon>
+                    <p class="slds-text-body_regular slds-m-top_small">No audit trails found</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

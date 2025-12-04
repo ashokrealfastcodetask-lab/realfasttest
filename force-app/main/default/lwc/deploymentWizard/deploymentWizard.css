@@ -1,0 +1,110 @@
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.step-label {
+    font-weight: 600;
+    color: #0070d2;
+    font-size: 14px;
+}
+
+.step-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1d1d1d;
+}
+
+.package-xml-preview {
+    background-color: #f5f5f5;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+lightning-alert {
+    margin-bottom: 1rem;
+}
+
+.slds-box {
+    background-color: #ffffff;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.slds-box_border {
+    background-color: #fafaf9;
+    border-top: 1px solid #d8d8d8;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.slds-float_right {
+    float: right;
+}
+
+.slds-m-bottom_small {
+    margin-bottom: 0.5rem;
+}
+
+.slds-m-bottom_medium {
+    margin-bottom: 1rem;
+}
+
+.slds-m-top_medium {
+    margin-top: 1rem;
+}
+
+.slds-m-right_small {
+    margin-right: 0.5rem;
+}
+
+.slds-text-title_bold {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1d1d1d;
+}
+
+.slds-text-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1d;
+}
+
+.slds-text-body_small {
+    font-size: 12px;
+    color: #3e3e3c;
+}
+
+.slds-text-color_weak {
+    color: #747474;
+}
+
+.slds-progress-bar {
+    background-color: #d8d8d8;
+    border-radius: 4px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.slds-progress-bar_medium {
+    height: 8px;
+}
+
+.slds-progress-bar__value {
+    background-color: #0070d2;
+    height: 100%;
+    transition: width 0.3s ease-in-out;
+}
+
+lightning-card::part(body) {
+    padding: 1rem;
+}

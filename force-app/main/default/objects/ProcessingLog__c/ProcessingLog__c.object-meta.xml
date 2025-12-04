@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Processing Log</label>
+    <nameField>
+        <displayFormat>LOG-{0000000}</displayFormat>
+        <label>Log Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Processing Logs</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>ProcessType__c</fullName>
+        <label>Process Type</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Setup Audit Trail Sync</fullName>
+                    <default>false</default>
+                    <label>Setup Audit Trail Sync</label>
+                </value>
+                <value>
+                    <fullName>Metadata Extraction</fullName>
+                    <default>false</default>
+                    <label>Metadata Extraction</label>
+                </value>
+                <value>
+                    <fullName>Package Generation</fullName>
+                    <default>false</default>
+                    <label>Package Generation</label>
+                </value>
+                <value>
+                    <fullName>Deployment</fullName>
+                    <default>false</default>
+                    <label>Deployment</label>
+                </value>
+                <value>
+                    <fullName>Validation</fullName>
+                    <default>false</default>
+                    <label>Validation</label>
+                </value>
+                <value>
+                    <fullName>Data Migration</fullName>
+                    <default>false</default>
+                    <label>Data Migration</label>
+                </value>
+                <value>
+                    <fullName>Error Handling</fullName>
+                    <default>false</default>
+                    <label>Error Handling</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Started</fullName>
+                    <default>true</default>
+                    <label>Started</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Completed With Warnings</fullName>
+                    <default>false</default>
+                    <label>Completed With Warnings</label>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+                <value>
+                    <fullName>Aborted</fullName>
+                    <default>false</default>
+                    <label>Aborted</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>RelatedObject__c</fullName>
+        <label>Related Object Type</label>
+        <type>Text</type>
+        <length>100</length>
+        <externalId>false</externalId>
+        <description>Type of object being processed (e.g., SetupAuditTrail__c, DeploymentPackage__c)</description>
+    </fields>
+    
+    <fields>
+        <fullName>RelatedObjectId__c</fullName>
+        <label>Related Object ID</label>
+        <type>Text</type>
+        <length>18</length>
+        <externalId>false</externalId>
+        <description>ID of the related object being processed</description>
+    </fields>
+    
+    <fields>
+        <fullName>OrgConnection__c</fullName>
+        <label>Org Connection</label>
+        <type>Lookup</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Processing Logs</relationshipLabel>
+        <relationshipName>ProcessingLogs</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>StartTime__c</fullName>
+        <label>Start Time</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>EndTime__c</fullName>
+        <label>End Time</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>DurationMilliseconds__c</fullName>
+        <label>Duration (Milliseconds)</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ProcessedRecords__c</fullName>
+        <label>Processed Records</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SuccessfulRecords__c</fullName>
+        <label>Successful Records</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>FailedRecords__c</fullName>
+        <label>Failed Records</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>WarningCount__c</fullName>
+        <label>Warning Count</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SuccessRate__c</fullName>
+        <label>Success Rate (%)</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <externalId>false</externalId>
+        <description>Percentage of successfully processed records</description>
+    </fields>
+    
+    <fields>
+        <fullName>LogMessage__c</fullName>
+        <label>Log Message</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Detailed log messages from the process execution</description>
+    </fields>
+    
+    <fields>
+        <fullName>ErrorMessage__c</fullName>
+        <label>Error Message</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Error details if process failed</description>
+    </fields>
+    
+    <fields>
+        <fullName>WarningMessage__c</fullName>
+        <label>Warning Message</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>3</visibleLines>
+        <description>Warning details if any warnings were encountered</description>
+    </fields>
+    
+    <fields>
+        <fullName>StackTrace__c</fullName>
+        <label>Stack Trace</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Exception stack trace for debugging</description>
+    </fields>
+    
+    <fields>
+        <fullName>ProcessedBy__c</fullName>
+        <label>Processed By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Processing Logs</relationshipLabel>
+        <relationshipName>ProcessingLogs</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>BatchJobId__c</fullName>
+        <label>Batch Job ID</label>
+        <type>Text</type>
+        <length>50</length>
+        <externalId>true</externalId>
+        <description>Salesforce Batch Apex job ID if applicable</description>
+    </fields>
+    
+    <fields>
+        <fullName>ExternalProcessId__c</fullName>
+        <label>External Process ID</label>
+        <type>Text</type>
+        <length>100</length>
+        <externalId>true</externalId>
+        <description>External system process ID for cross-system tracking</description>
+    </fields>
+    
+    <fields>
+        <fullName>LogLevel__c</fullName>
+        <label>Log Level</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>DEBUG</fullName>
+                    <default>false</default>
+                    <label>DEBUG</label>
+                </value>
+                <value>
+                    <fullName>INFO</fullName>
+                    <default>true</default>
+                    <label>INFO</label>
+                </value>
+                <value>
+                    <fullName>WARN</fullName>
+                    <default>false</default>
+                    <label>WARN</label>
+                </value>
+                <value>
+                    <fullName>ERROR</fullName>
+                    <default>false</default>
+                    <label>ERROR</label>
+                </value>
+                <value>
+                    <fullName>CRITICAL</fullName>
+                    <default>false</default>
+                    <label>CRITICAL</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>RetryCount__c</fullName>
+        <label>Retry Count</label>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <description>Number of times this process was retried</description>
+    </fields>
+    
+    <fields>
+        <fullName>IsRetryable__c</fullName>
+        <label>Is Retryable</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+        <description>Whether this process can be retried if failed</description>
+    </fields>
+    
+    <fields>
+        <fullName>Notes__c</fullName>
+        <label>Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <description>Additional notes about the process execution</description>
+    </fields>
+    
+    <!-- Validation Rules -->
+    <validationRules>
+        <fullName>End_Time_After_Start_Time</fullName>
+        <active>true</active>
+        <errorConditionFormula>
+            AND(
+                NOT(ISBLANK(EndTime__c)),
+                NOT(ISBLANK(StartTime__c)),
+                EndTime__c &lt; StartTime__c
+            )
+        </errorConditionFormula>
+        <errorDisplayField>EndTime__c</errorDisplayField>
+        <errorMessage>End Time must be after Start Time</errorMessage>
+    </validationRules>
+</CustomObject>

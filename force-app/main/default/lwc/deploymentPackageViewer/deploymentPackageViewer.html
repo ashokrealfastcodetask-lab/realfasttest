@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Deployment Packages" icon-name="standard:document">
+        <lightning-button
+            slot="actions"
+            label="Refresh"
+            icon-name="utility:refresh"
+            onclick={handleRefresh}
+            variant="brand"
+            disabled={isLoading}>
+        </lightning-button>
+
+        <div class="slds-m-around_medium">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading..."></lightning-spinner>
+            </template>
+
+            <template if:true={hasPackages}>
+                <lightning-datatable
+                    key-field="Id"
+                    data={deploymentPackages}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={hasPackages}>
+                <div class="slds-align_absolute-center slds-m-vertical_large">
+                    <p class="slds-text-body_regular">No deployment packages found</p>
+                </div>
+            </template>
+
+            <template if:true={error}>
+                <lightning-alert
+                    variant="error"
+                    title="Error"
+                    message={error}>
+                </lightning-alert>
+            </template>
+        </div>
+    </lightning-card>
+</template>

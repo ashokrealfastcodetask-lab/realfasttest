@@ -1,0 +1,41 @@
+/**
+ * @description Selector for OrgConnection__c object
+ */
+public class OrgConnectionSelector extends ApplicationSelector {
+    
+    public override Schema.SObjectType getSObjectType() {
+        return OrgConnection__c.SObjectType;
+    }
+    
+    public override List<Schema.SObjectField> getSObjectFieldList() {
+        return new List<Schema.SObjectField> {
+            OrgConnection__c.Id,
+            OrgConnection__c.Name,
+            OrgConnection__c.OrgName__c,
+            OrgConnection__c.OrgType__c,
+            OrgConnection__c.InstanceURL__c,
+            OrgConnection__c.IsActive__c,
+            OrgConnection__c.NamedCredential__c,
+            OrgConnection__c.LastSyncDate__c,
+            OrgConnection__c.SyncFrequency__c
+        };
+    }
+    
+    /**
+     * @description Select active org connections
+     */
+    public List<OrgConnection__c> selectActive() {
+        String whereClause = 'IsActive__c = true';
+        return Database.query(buildQueryString(null, whereClause));
+    }
+    
+    /**
+     * @description Select orgs ready for sync based on frequency
+     */
+    public List<OrgConnection__c> selectReadyForSync() {
+        String whereClause = 'IsActive__c = true AND ' +
+                           '(LastSyncDate__c = null OR ' +
+                           'LastSyncDate__c < LAST_N_HOURS:1)';
+        return Database.query(buildQueryString(null, whereClause));
+    }
+}

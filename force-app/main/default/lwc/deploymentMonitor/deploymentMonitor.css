@@ -1,0 +1,158 @@
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.slds-float_left {
+    float: left;
+}
+
+.filter-section {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filter-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.record-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0070d2;
+}
+
+.metrics-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.metric-box {
+    flex: 1;
+    min-width: 150px;
+    background-color: #f3f3f1;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.metric-box.success {
+    border-left: 4px solid #04844b;
+}
+
+.metric-box.failed {
+    border-left: 4px solid #c23030;
+}
+
+.metric-box.in-progress {
+    border-left: 4px solid #0070d2;
+}
+
+.metric-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #747474;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0070d2;
+}
+
+.deployment-table {
+    margin-top: 1rem;
+}
+
+.no-records {
+    text-align: center;
+    padding: 2rem;
+    color: #747474;
+}
+
+.slds-m-right_small {
+    margin-right: 0.5rem;
+}
+
+.slds-m-bottom_medium {
+    margin-bottom: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.detail-label {
+    flex: 0 0 25%;
+    font-weight: 600;
+    color: #1d1d1d;
+}
+
+.detail-value {
+    flex: 1;
+    color: #3e3e3c;
+}
+
+.slds-text-title_bold {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1d1d1d;
+    margin-bottom: 1rem;
+}
+
+.slds-box {
+    background-color: #ffffff;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.status-success {
+    color: #04844b;
+    font-weight: 600;
+}
+
+.status-failed {
+    color: #c23030;
+    font-weight: 600;
+}
+
+.status-in-progress {
+    color: #0070d2;
+    font-weight: 600;
+}
+
+.status-canceled {
+    color: #747474;
+    font-weight: 600;
+}
+
+.status-queued {
+    color: #f4a460;
+    font-weight: 600;
+}

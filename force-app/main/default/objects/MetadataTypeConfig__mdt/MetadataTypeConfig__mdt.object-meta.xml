@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadataType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Configuration for different Salesforce metadata types</description>
+    <label>Metadata Type Config</label>
+    <pluralLabel>Metadata Type Configs</pluralLabel>
+    <visibility>Public</visibility>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>MetadataType__c</fullName>
+        <description>The Salesforce metadata type name</description>
+        <fieldType>Text</fieldType>
+        <label>Metadata Type</label>
+        <length>100</length>
+        <required>true</required>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>SectionPattern__c</fullName>
+        <description>Pattern to match for categorizing metadata types</description>
+        <fieldType>Text</fieldType>
+        <label>Section Pattern</label>
+        <length>255</length>
+        <required>false</required>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>IsRetrievable__c</fullName>
+        <description>Whether this metadata type can be retrieved</description>
+        <fieldType>Checkbox</fieldType>
+        <label>Is Retrievable</label>
+        <required>false</required>
+    </fields>
+    
+    <fields>
+        <fullName>IsDeployable__c</fullName>
+        <description>Whether this metadata type can be deployed</description>
+        <fieldType>Checkbox</fieldType>
+        <label>Is Deployable</label>
+        <required>false</required>
+    </fields>
+    
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Description of the metadata type</description>
+        <fieldType>LongTextArea</fieldType>
+        <label>Description</label>
+        <length>1000</length>
+        <required>false</required>
+        <visibleLines>3</visibleLines>
+    </fields>
+    
+    <fields>
+        <fullName>ProcessingPriority__c</fullName>
+        <description>Priority order for processing this metadata type</description>
+        <fieldType>Number</fieldType>
+        <label>Processing Priority</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>ExtractionPattern__c</fullName>
+        <description>Regex pattern to extract component name from display text</description>
+        <fieldType>Text</fieldType>
+        <label>Extraction Pattern</label>
+        <length>500</length>
+        <required>false</required>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>DirectoryName__c</fullName>
+        <description>Directory name for this metadata type in file system</description>
+        <fieldType>Text</fieldType>
+        <label>Directory Name</label>
+        <length>100</length>
+        <required>false</required>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>Suffix__c</fullName>
+        <description>File suffix for this metadata type</description>
+        <fieldType>Text</fieldType>
+        <label>Suffix</label>
+        <length>50</length>
+        <required>false</required>
+        <unique>false</unique>
+    </fields>
+    
+    <fields>
+        <fullName>IsActive__c</fullName>
+        <description>Whether this metadata type configuration is active</description>
+        <fieldType>Checkbox</fieldType>
+        <label>Is Active</label>
+        <required>false</required>
+    </fields>
+</CustomMetadataType>

@@ -1,0 +1,154 @@
+# Deployment Configuration
+# Specifies deployment options for different target environments
+
+deployments:
+  
+  # Development Environment Deployment
+  development:
+    name: Deploy to Development
+    description: Deploy metadata to development org
+    options:
+      checkOnly: false
+      rollbackOnError: true
+      singlePackage: true
+      testLevel: RunLocalTests
+      ignoreWarnings: false
+      performRetrieve: false
+    tests:
+      - SetupAuditTrailsTest
+      - PackageGenerationServiceTest
+      - MetadataTypeConfigSelectorTest
+    
+  # Sandbox Environment Deployment
+  sandbox:
+    name: Deploy to Sandbox
+    description: Deploy metadata to sandbox for testing
+    options:
+      checkOnly: false
+      rollbackOnError: true
+      singlePackage: true
+      testLevel: RunAllTestsInOrg
+      ignoreWarnings: false
+      performRetrieve: false
+    tests:
+      - '*Test'
+    
+  # Production Environment Deployment
+  production:
+    name: Deploy to Production
+    description: Production deployment with validation
+    options:
+      checkOnly: false
+      rollbackOnError: true
+      singlePackage: true
+      testLevel: RunLocalTests
+      ignoreWarnings: false
+      performRetrieve: false
+    tests:
+      - SetupAuditTrailsTest
+      - PackageGenerationServiceTest
+      - MetadataTypeConfigSelectorTest
+    approvalRequired: true
+    notifyOnSuccess: true
+    notifyOnFailure: true
+
+# Validation Settings
+validation:
+  
+  codeAnalysis:
+    enabled: true
+    tool: pmd
+    rules:
+      - ApexDoc
+      - AvoidDeeplyNestedIfStmts
+      - ExcessiveClassLength
+      - ExcessiveMethodLength
+      - NcssMethodCount
+      - NcssTypeCount
+  
+  coverage:
+    required: true
+    minimumCoveragePercentage: 75
+    perClassMinimum: 50
+  
+  lint:
+    enabled: true
+    severity: warning
+
+# Rollback Configuration
+rollback:
+  enabled: true
+  autoRollbackOnFailure: true
+  retentionDays: 30
+  
+# Monitoring and Logging
+monitoring:
+  logLevel: INFO
+  captureDetails: true
+  notifyChannels:
+    - slack
+    - email
+  errorNotification: true
+  warningNotification: false
+
+# Component Inclusion/Exclusion
+components:
+  
+  include:
+    - CustomObjects/*
+    - CustomMetadata/*
+    - ApexClasses/*
+    - ApexPages/*
+    - Triggers/*
+    - ValidationRules/*
+    - FieldSets/*
+  
+  exclude:
+    - "*Test"
+    - "*Test.cls"
+    - "classes/Test*"
+
+# Metadata Retrieval
+retrieval:
+  enabled: false
+  source: production
+  destination: ./retrieved-metadata
+  apiVersion: 64.0
+  
+# Post-Deployment Actions
+postDeployment:
+  
+  actions:
+    - name: Update Dependencies
+      enabled: true
+      command: npm install
+    
+    - name: Run Tests
+      enabled: true
+      command: sf apex run test --wait 10
+    
+    - name: Generate Report
+      enabled: true
+      command: npm run report
+    
+    - name: Notify Team
+      enabled: true
+      channels:
+        - slack
+        - teams
+
+# Pre-Deployment Actions
+preDeployment:
+  
+  actions:
+    - name: Validate Metadata
+      enabled: true
+      command: sf project deploy start --checkonly
+    
+    - name: Run Code Analysis
+      enabled: true
+      command: npm run lint
+    
+    - name: Check Dependencies
+      enabled: true
+      command: npm audit

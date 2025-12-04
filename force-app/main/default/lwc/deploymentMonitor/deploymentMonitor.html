@@ -1,0 +1,210 @@
+<template>
+    <lightning-card title="Deployment Monitor" icon-name="standard:monitor">
+        <div class="action-bar">
+            <div class="slds-float_left">
+                <lightning-button
+                    variant="neutral"
+                    label="Toggle Filters"
+                    onclick={handleToggleFilters}
+                    icon-name="utility:filter"
+                    class="slds-m-right_small"></lightning-button>
+                
+                <lightning-button
+                    variant="neutral"
+                    label="Refresh"
+                    onclick={handleRefresh}
+                    icon-name="utility:refresh"
+                    class="slds-m-right_small"></lightning-button>
+            </div>
+            
+            <div class="record-count">
+                {recordCount} deployments
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <template if:true={showFilters}>
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-input">
+                        <lightning-input
+                            type="date"
+                            label="From Date"
+                            value={dateFrom}
+                            onchange={handleDateFromChange}></lightning-input>
+                    </div>
+                    <div class="filter-input">
+                        <lightning-input
+                            type="date"
+                            label="To Date"
+                            value={dateTo}
+                            onchange={handleDateToChange}></lightning-input>
+                    </div>
+                    <div class="filter-input">
+                        <lightning-combobox
+                            label="Status"
+                            value={selectedStatus}
+                            options={statuses}
+                            onchange={handleStatusChange}
+                            placeholder="All"></lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <lightning-button
+                        variant="neutral"
+                        label="Clear Filters"
+                        onclick={handleClearFilters}
+                        class="slds-m-right_small"></lightning-button>
+                    
+                    <lightning-button
+                        variant="brand"
+                        label="Apply Filters"
+                        onclick={handleApplyFilters}></lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Metrics Section -->
+        <template if:true={metrics}>
+            <div class="metrics-section">
+                <div class="metric-box">
+                    <div class="metric-label">Total Deployments</div>
+                    <div class="metric-value">{metrics.totalDeployments}</div>
+                </div>
+                <div class="metric-box success">
+                    <div class="metric-label">Successful</div>
+                    <div class="metric-value">{metrics.successfulDeployments}</div>
+                </div>
+                <div class="metric-box failed">
+                    <div class="metric-label">Failed</div>
+                    <div class="metric-value">{metrics.failedDeployments}</div>
+                </div>
+                <div class="metric-box in-progress">
+                    <div class="metric-label">In Progress</div>
+                    <div class="metric-value">{metrics.inProgressDeployments}</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Success Rate</div>
+                    <div class="metric-value">{metrics.successRate}%</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-label">Avg Components</div>
+                    <div class="metric-value">{metrics.avgComponentsDeployed}</div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Error Alert -->
+        <template if:true={error}>
+            <lightning-alert variant="error" class="slds-m-bottom_medium">
+                {error}
+            </lightning-alert>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+
+        <!-- Deployment List -->
+        <template if:true={hasRecords}>
+            <div class="deployment-table">
+                <lightning-datatable
+                    key-field="Id"
+                    data={deployments}
+                    columns={columns}
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <!-- No Records Message -->
+        <template if:true={hasNoRecords}>
+            <div class="no-records">
+                <p>No deployments found.</p>
+            </div>
+        </template>
+
+        <!-- Detail Modal -->
+        <template if:true={isDetailOpen}>
+            <lightning-modal
+                title="Deployment Details"
+                onclose={handleCloseDetail}>
+                
+                <template if:true={deploymentDetail}>
+                    <div class="slds-box">
+                        <h3 class="slds-text-title_bold">Deployment Information</h3>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Deployment ID:</div>
+                            <div class="detail-value">{deploymentDetail.deploymentId}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Name:</div>
+                            <div class="detail-value">{deploymentDetail.name}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Package:</div>
+                            <div class="detail-value">{deploymentDetail.packageName}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Source Org:</div>
+                            <div class="detail-value">{deploymentDetail.sourceOrgName}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Target Org:</div>
+                            <div class="detail-value">{deploymentDetail.targetOrgName}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">{deploymentDetail.status}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Requested By:</div>
+                            <div class="detail-value">{deploymentDetail.requestedBy}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Tests Executed:</div>
+                            <div class="detail-value">{deploymentDetail.testsExecuted}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Tests Passed:</div>
+                            <div class="detail-value">{deploymentDetail.testsPassed}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Tests Failed:</div>
+                            <div class="detail-value">{deploymentDetail.testsFailed}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Components Deployed:</div>
+                            <div class="detail-value">{deploymentDetail.componentDeployed}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Components Failed:</div>
+                            <div class="detail-value">{deploymentDetail.componentFailed}</div>
+                        </div>
+                    </div>
+                </template>
+                
+                <div slot="footer">
+                    <lightning-button
+                        variant="neutral"
+                        label="Close"
+                        onclick={handleCloseDetail}></lightning-button>
+                </div>
+            </lightning-modal>
+        </template>
+    </lightning-card>
+</template>

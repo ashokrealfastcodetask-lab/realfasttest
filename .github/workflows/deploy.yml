@@ -1,0 +1,93 @@
+name: Salesforce CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Salesforce Metadata
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Authenticate to Salesforce
+        run: |
+          sf org login web --instance-url ${{ secrets.SALESFORCE_INSTANCE_URL }} \
+            --client-id ${{ secrets.SALESFORCE_CLIENT_ID }} \
+            --client-secret ${{ secrets.SALESFORCE_CLIENT_SECRET }} \
+            --username-store
+
+      - name: Run PMD Analysis
+        run: sf plugins install @salesforce/plugin-code-coverage
+
+      - name: Deploy to scratch org
+        run: |
+          sf org create scratch -f config/project-scratch-def.json -a test-org
+          sf project deploy start --source-dir force-app --target-org test-org
+
+      - name: Run Apex Tests
+        run: |
+          sf apex run test --target-org test-org --wait 10 --result-format human
+
+      - name: Delete scratch org
+        if: always()
+        run: sf org delete scratch --target-org test-org --no-prompt
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    name: Deploy to Development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Authenticate to Dev Org
+        run: |
+          sf org login web --instance-url ${{ secrets.DEV_INSTANCE_URL }} \
+            --client-id ${{ secrets.SALESFORCE_CLIENT_ID }} \
+            --client-secret ${{ secrets.SALESFORCE_CLIENT_SECRET }} \
+            --username-store
+
+      - name: Deploy to Dev
+        run: sf project deploy start --source-dir force-app --target-org dev-org
+
+      - name: Run Tests in Dev
+        run: sf apex run test --target-org dev-org --wait 10 --result-format human
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Salesforce CLI
+        run: npm install -g @salesforce/cli
+
+      - name: Authenticate to Prod Org
+        run: |
+          sf org login web --instance-url ${{ secrets.PROD_INSTANCE_URL }} \
+            --client-id ${{ secrets.SALESFORCE_CLIENT_ID }} \
+            --client-secret ${{ secrets.SALESFORCE_CLIENT_SECRET }} \
+            --username-store
+
+      - name: Deploy to Production
+        run: sf project deploy start --source-dir force-app --target-org prod-org --test-level RunLocalTests
+
+      - name: Run Tests in Production
+        run: sf apex run test --target-org prod-org --wait 10 --result-format human

@@ -1,0 +1,126 @@
+# Salesforce DX Project Configuration
+# Project Structure and Build Settings
+
+project:
+  name: RealFast
+  version: 1.0.0
+  description: Salesforce metadata deployment and audit trail management system
+  
+sourceApiVersion: 64.0
+packageDirectories:
+  - path: force-app
+    default: true
+    package: RealFast
+    versionName: Release 1.0
+    versionNumber: 1.0.0.0
+
+namespace: realfast
+sfdcLoginUrl: https://login.salesforce.com
+packageAliases:
+  RealFast: '0HoXX0000000000'
+
+# Custom Objects
+customObjects:
+  - name: OrgConnection__c
+    description: Stores connections to multiple Salesforce orgs
+    deployable: true
+    retrievable: true
+
+  - name: SetupAuditTrail__c
+    description: Stores audit trail records from connected orgs
+    deployable: true
+    retrievable: true
+
+  - name: DeploymentPackage__c
+    description: Stores generated package.xml files and metadata
+    deployable: true
+    retrievable: true
+
+  - name: PackageComponent__c
+    description: Stores individual components within deployment packages
+    deployable: true
+    retrievable: true
+
+  - name: DeploymentHistory__c
+    description: Tracks deployment history and audit trail
+    deployable: true
+    retrievable: true
+
+  - name: ProcessingLog__c
+    description: Tracks processing and logging activities
+    deployable: true
+    retrievable: true
+
+# Custom Metadata Types
+customMetadataTypes:
+  - name: MetadataTypeConfig__mdt
+    description: Configuration for different Salesforce metadata types
+    deployable: true
+    retrievable: true
+
+# Apex Classes
+apexClasses:
+  - name: ApplicationSelector
+    description: Base selector class for SOQL queries
+  - name: OrgConnectionSelector
+    description: Selector for OrgConnection__c queries
+  - name: SetupAuditTrailSelector
+    description: Selector for SetupAuditTrail__c queries
+  - name: DeploymentPackageSelector
+    description: Selector for DeploymentPackage__c queries
+  - name: MetadataTypeConfigSelector
+    description: Selector for MetadataTypeConfig__mdt queries
+  - name: PackageXmlBuilder
+    description: Utility to build package.xml files
+  - name: PackageGenerationService
+    description: Service for generating deployment packages
+  - name: SetupAuditTrails
+    description: Domain class for audit trail processing
+
+# Deployment Settings
+deploymentSettings:
+  checkOnly: false
+  rollbackOnError: true
+  singlePackage: true
+  testLevel: RunLocalTests
+  runTests:
+    - AllTests
+  ignoreWarnings: false
+
+# Build Settings
+build:
+  sourceFormat: metadata
+  pollTimeout: 3000
+  pollIntervalMs: 1000
+
+# Test Configuration
+tests:
+  enabled: true
+  testLevel: RunLocalTests
+  coverageThreshold: 75
+  classes:
+    - '*Test'
+    - '*_Test'
+
+# Scratch Org Configuration
+scratchOrgSettings:
+  definitionFile: config/project-scratch-def.json
+  duration: 30
+  features:
+    - Communities
+    - ForceComm
+    - ServiceCloud
+
+# Environment Configuration
+environments:
+  development:
+    instance: cs1.salesforce.com
+    org: dev-org
+    
+  sandbox:
+    instance: cs2.salesforce.com
+    org: sandbox-org
+    
+  production:
+    instance: login.salesforce.com
+    org: prod-org

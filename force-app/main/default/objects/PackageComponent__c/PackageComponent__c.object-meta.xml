@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Package Component</label>
+    <nameField>
+        <displayFormat>COMP-{0000000}</displayFormat>
+        <label>Component Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Package Components</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>DeploymentPackage__c</fullName>
+        <label>Deployment Package</label>
+        <type>MasterDetail</type>
+        <referenceTo>DeploymentPackage__c</referenceTo>
+        <relationshipLabel>Components</relationshipLabel>
+        <relationshipName>PackageComponents</relationshipName>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentName__c</fullName>
+        <label>Component Name</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>MetadataType__c</fullName>
+        <label>Metadata Type</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>100</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentVersion__c</fullName>
+        <label>Component Version</label>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>1</scale>
+        <defaultValue>1.0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentContent__c</fullName>
+        <label>Component Content</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Raw component metadata content</description>
+    </fields>
+    
+    <fields>
+        <fullName>IsProcessed__c</fullName>
+        <label>Is Processed</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsIncluded__c</fullName>
+        <label>Is Included</label>
+        <defaultValue>true</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+        <description>Whether this component is included in the deployment package</description>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentStatus__c</fullName>
+        <label>Deployment Status</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Pending</fullName>
+                    <default>true</default>
+                    <label>Pending</label>
+                </value>
+                <value>
+                    <fullName>Deployed</fullName>
+                    <default>false</default>
+                    <label>Deployed</label>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+                <value>
+                    <fullName>Skipped</fullName>
+                    <default>false</default>
+                    <label>Skipped</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentError__c</fullName>
+        <label>Deployment Error</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <description>Error message if deployment failed</description>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentHash__c</fullName>
+        <label>Component Hash</label>
+        <type>Text</type>
+        <length>64</length>
+        <externalId>true</externalId>
+        <description>SHA-256 hash of component content for change detection</description>
+    </fields>
+    
+    <fields>
+        <fullName>IsModified__c</fullName>
+        <label>Is Modified</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+        <description>Indicates if component was modified from original</description>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentDate__c</fullName>
+        <label>Deployment Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+</CustomObject>

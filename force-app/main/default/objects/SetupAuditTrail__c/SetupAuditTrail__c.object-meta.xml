@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Setup Audit Trail</label>
+    <nameField>
+        <displayFormat>SAT-{0000000}</displayFormat>
+        <label>Audit Trail Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Setup Audit Trails</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>Action__c</fullName>
+        <label>Action</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>Section__c</fullName>
+        <label>Section</label>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>Display__c</fullName>
+        <label>Display</label>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>CreatedDate__c</fullName>
+        <label>Created Date</label>
+        <required>true</required>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>CreatedById__c</fullName>
+        <label>Created By Id</label>
+        <type>Text</type>
+        <length>18</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>CreatedByName__c</fullName>
+        <label>Created By Name</label>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>OrgConnection__c</fullName>
+        <label>Org Connection</label>
+        <type>MasterDetail</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Audit Trails</relationshipLabel>
+        <relationshipName>SetupAuditTrails</relationshipName>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    
+    <fields>
+        <fullName>MetadataType__c</fullName>
+        <label>Metadata Type</label>
+        <type>Text</type>
+        <length>100</length>
+        <externalId>true</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentName__c</fullName>
+        <label>Component Name</label>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>true</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsProcessed__c</fullName>
+        <label>Is Processed</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ProcessedDate__c</fullName>
+        <label>Processed Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsArchived__c</fullName>
+        <label>Is Archived</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ParsingError__c</fullName>
+        <label>Parsing Error</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+    </fields>
+    
+    <fields>
+        <fullName>RawData__c</fullName>
+        <label>Raw Data</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Original audit trail data in JSON format</description>
+    </fields>
+    
+    <!-- Indexes for Performance -->
+    
+    
+   
+</CustomObject>

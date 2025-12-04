@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Deployment History</label>
+    <nameField>
+        <displayFormat>DH-{0000000}</displayFormat>
+        <label>Deployment History Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Deployment Histories</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>DeploymentPackage__c</fullName>
+        <label>Deployment Package</label>
+        <type>Lookup</type>
+        <referenceTo>DeploymentPackage__c</referenceTo>
+        <relationshipLabel>Deployment Histories</relationshipLabel>
+        <relationshipName>DeploymentHistories</relationshipName>
+        <deleteConstraint>Restrict</deleteConstraint>
+    </fields>
+    
+    <fields>
+        <fullName>SourceOrg__c</fullName>
+        <label>Source Org</label>
+        <type>Lookup</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Source Deployments</relationshipLabel>
+        <relationshipName>SourceDeployments</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>TargetOrg__c</fullName>
+        <label>Target Org</label>
+        <type>Lookup</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Target Deployments</relationshipLabel>
+        <relationshipName>TargetDeployments</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentStatus__c</fullName>
+        <label>Deployment Status</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Queued</fullName>
+                    <default>true</default>
+                    <label>Queued</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Succeeded</fullName>
+                    <default>false</default>
+                    <label>Succeeded</label>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+                <value>
+                    <fullName>Canceled</fullName>
+                    <default>false</default>
+                    <label>Canceled</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentStartDate__c</fullName>
+        <label>Deployment Start Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentEndDate__c</fullName>
+        <label>Deployment End Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentDurationMinutes__c</fullName>
+        <label>Deployment Duration (Minutes)</label>
+        <type>Number</type>
+        <precision>10</precision>
+        <scale>2</scale>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>TotalComponents__c</fullName>
+        <label>Total Components</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SuccessfulComponents__c</fullName>
+        <label>Successful Components</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>FailedComponents__c</fullName>
+        <label>Failed Components</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SuccessRate__c</fullName>
+        <label>Success Rate (%)</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>2</scale>
+        <externalId>false</externalId>
+        <description>Percentage of components successfully deployed</description>
+    </fields>
+    
+    <fields>
+        <fullName>DeployedById__c</fullName>
+        <label>Deployed By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Deployment Histories</relationshipLabel>
+        <relationshipName>DeploymentHistories</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentId__c</fullName>
+        <label>Deployment ID</label>
+        <type>Text</type>
+        <length>50</length>
+        <externalId>true</externalId>
+        <description>External deployment ID from Salesforce metadata API</description>
+    </fields>
+    
+    <fields>
+        <fullName>ErrorLog__c</fullName>
+        <label>Error Log</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>5</visibleLines>
+        <description>Detailed error messages from failed components</description>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentSummary__c</fullName>
+        <label>Deployment Summary</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <description>Summary of deployment results and statistics</description>
+    </fields>
+    
+    <fields>
+        <fullName>RunTests__c</fullName>
+        <label>Run Tests</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+        <description>Whether tests were run during deployment</description>
+    </fields>
+    
+    <fields>
+        <fullName>TestsExecuted__c</fullName>
+        <label>Tests Executed</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>TestsPassed__c</fullName>
+        <label>Tests Passed</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>TestsFailed__c</fullName>
+        <label>Tests Failed</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>RollbackDeployment__c</fullName>
+        <label>Rollback Deployment</label>
+        <type>Lookup</type>
+        <referenceTo>DeploymentHistory__c</referenceTo>
+        <relationshipLabel>Rolled Back Deployments</relationshipLabel>
+        <relationshipName>RolledBackDeployments</relationshipName>
+        <description>Links to rollback deployment if one was executed</description>
+    </fields>
+    
+    <fields>
+        <fullName>Notes__c</fullName>
+        <label>Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <description>Additional notes about the deployment</description>
+    </fields>
+    
+    <!-- Validation Rules -->
+    <validationRules>
+        <fullName>End_Date_After_Start_Date</fullName>
+        <active>true</active>
+        <errorConditionFormula>
+            AND(
+                NOT(ISBLANK(DeploymentEndDate__c)),
+                NOT(ISBLANK(DeploymentStartDate__c)),
+                DeploymentEndDate__c &lt; DeploymentStartDate__c
+            )
+        </errorConditionFormula>
+        <errorDisplayField>DeploymentEndDate__c</errorDisplayField>
+        <errorMessage>Deployment End Date must be after Start Date</errorMessage>
+    </validationRules>
+</CustomObject>

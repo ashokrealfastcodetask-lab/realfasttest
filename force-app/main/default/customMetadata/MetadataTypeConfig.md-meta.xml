@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CustomMetadata">
+    <label>ApexClass Config</label>
+    <values>
+        <field>Description__c</field>
+        <value>Configuration for Apex Classes metadata type</value>
+    </values>
+    <values>
+        <field>IsDeployable__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>IsRetrievable__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>MetadataType__c</field>
+        <value>ApexClass</value>
+    </values>
+    <values>
+        <field>ProcessingPriority__c</field>
+        <value xsi:type="xsd:int">10</value>
+    </values>
+    <values>
+        <field>SectionPattern__c</field>
+        <value>Code</value>
+    </values>
+</CustomMetadata>

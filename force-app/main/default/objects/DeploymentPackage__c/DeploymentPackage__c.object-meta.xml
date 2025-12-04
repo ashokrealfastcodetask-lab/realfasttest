@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Deployment Package</label>
+    <nameField>
+        <displayFormat>PKG-{0000000}</displayFormat>
+        <label>Package Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Deployment Packages</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>PackageName__c</fullName>
+        <label>Package Name</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>Version__c</fullName>
+        <label>Version</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>50</length>
+        <externalId>true</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>APIVersion__c</fullName>
+        <label>API Version</label>
+        <required>true</required>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>1</scale>
+        <defaultValue>60.0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SourceOrg__c</fullName>
+        <label>Source Org</label>
+        <type>Lookup</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Source Packages</relationshipLabel>
+        <relationshipName>SourcePackages</relationshipName>
+    </fields>    
+    <fields>
+        <fullName>TargetOrg__c</fullName>
+        <label>Target Org</label>
+        <type>Lookup</type>
+        <referenceTo>OrgConnection__c</referenceTo>
+        <relationshipLabel>Target Packages</relationshipLabel>
+        <relationshipName>TargetPackages</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>PackageXML__c</fullName>
+        <label>Package XML</label>
+        <type>LongTextArea</type>
+        <length>131072</length>
+        <visibleLines>10</visibleLines>
+    </fields>
+    
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Draft</fullName>
+                    <default>true</default>
+                    <label>Draft</label>
+                </value>
+                <value>
+                    <fullName>Ready</fullName>
+                    <default>false</default>
+                    <label>Ready</label>
+                </value>
+                <value>
+                    <fullName>Deployed</fullName>
+                    <default>false</default>
+                    <label>Deployed</label>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+                <value>
+                    <fullName>Archived</fullName>
+                    <default>false</default>
+                    <label>Archived</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>ComponentCount__c</fullName>
+        <label>Component Count</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsTemplate__c</fullName>
+        <label>Is Template</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsRollback__c</fullName>
+        <label>Is Rollback</label>
+        <defaultValue>false</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>ParentPackage__c</fullName>
+        <label>Parent Package</label>
+        <type>Lookup</type>
+        <referenceTo>DeploymentPackage__c</referenceTo>
+        <relationshipLabel>Rollback Packages</relationshipLabel>
+        <relationshipName>RollbackPackages</relationshipName>
+    </fields>
+    
+    <fields>
+        <fullName>Description__c</fullName>
+        <label>Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+    </fields>
+    
+    <fields>
+        <fullName>LastDeploymentDate__c</fullName>
+        <label>Last Deployment Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>GeneratedBy__c</fullName>
+        <label>Generated By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Generated Packages</relationshipLabel>
+        <relationshipName>GeneratedPackages</relationshipName>
+    </fields>
+</CustomObject>

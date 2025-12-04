@@ -1,0 +1,158 @@
+<template>
+    <lightning-card title="Processing Log Viewer" icon-name="standard:log">
+        <div class="action-bar">
+            <div class="slds-float_left">
+                <lightning-button
+                    variant="neutral"
+                    label="Toggle Filters"
+                    onclick={handleToggleFilters}
+                    icon-name="utility:filter"
+                    class="slds-m-right_small"></lightning-button>
+                
+                <lightning-button
+                    variant="neutral"
+                    label="Refresh"
+                    onclick={handleRefresh}
+                    icon-name="utility:refresh"
+                    class="slds-m-right_small"></lightning-button>
+                
+                <lightning-button
+                    variant="neutral"
+                    label="Export"
+                    onclick={handleExportToCSV}
+                    icon-name="utility:download"
+                    disabled={selectedRows.length === 0}
+                    class="slds-m-right_small"></lightning-button>
+            </div>
+            
+            <div class="record-count">
+                {recordCount} records
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <template if:true={showFilters}>
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-input">
+                        <lightning-input
+                            type="date"
+                            label="From Date"
+                            value={dateFrom}
+                            onchange={handleDateFromChange}></lightning-input>
+                    </div>
+                    <div class="filter-input">
+                        <lightning-input
+                            type="date"
+                            label="To Date"
+                            value={dateTo}
+                            onchange={handleDateToChange}></lightning-input>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <div class="filter-input">
+                        <lightning-combobox
+                            label="Process Type"
+                            value={selectedProcessType}
+                            options={processTypes}
+                            onchange={handleProcessTypeChange}
+                            placeholder="All"></lightning-combobox>
+                    </div>
+                    <div class="filter-input">
+                        <lightning-combobox
+                            label="Log Level"
+                            value={selectedLogLevel}
+                            options={logLevels}
+                            onchange={handleLogLevelChange}
+                            placeholder="All"></lightning-combobox>
+                    </div>
+                    <div class="filter-input">
+                        <lightning-combobox
+                            label="Status"
+                            value={selectedStatus}
+                            options={statuses}
+                            onchange={handleStatusChange}
+                            placeholder="All"></lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <lightning-button
+                        variant="neutral"
+                        label="Clear Filters"
+                        onclick={handleClearFilters}
+                        class="slds-m-right_small"></lightning-button>
+                    
+                    <lightning-button
+                        variant="brand"
+                        label="Apply Filters"
+                        onclick={handleApplyFilters}
+                        class="slds-m-right_small"></lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Statistics -->
+        <template if:true={statistics}>
+            <div class="statistics-section">
+                <div class="stat-box">
+                    <div class="stat-label">Total Logs</div>
+                    <div class="stat-value">{statistics.totalLogs}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Success</div>
+                    <div class="stat-value">{statistics.successCount}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Failed</div>
+                    <div class="stat-value">{statistics.failureCount}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">In Progress</div>
+                    <div class="stat-value">{statistics.inProgressCount}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Avg Duration (ms)</div>
+                    <div class="stat-value">{statistics.averageDuration}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Avg Success Rate</div>
+                    <div class="stat-value">{statistics.averageSuccessRate}%</div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Error Alert -->
+        <template if:true={error}>
+            <lightning-alert variant="error" class="slds-m-bottom_medium">
+                {error}
+            </lightning-alert>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+
+        <!-- Data Table -->
+        <template if:true={hasRecords}>
+            <div class="audit-trail-table">
+                <lightning-datatable
+                    key-field="Id"
+                    data={processingLogs}
+                    columns={columns}
+                    onrowselection={handleRowSelection}
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+            </div>
+        </template>
+
+        <!-- No Records Message -->
+        <template if:true={hasNoRecords}>
+            <div class="no-records">
+                <p>No processing logs found.</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>

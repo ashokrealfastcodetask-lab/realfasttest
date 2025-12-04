@@ -1,0 +1,201 @@
+<template>
+    <lightning-card title="Deployment Wizard" icon-name="standard:deploy">
+        <!-- Progress Bar -->
+        <div class="slds-m-bottom_medium">
+            <div class="progress-header">
+                <span class="step-label">Step {currentStep} of {totalSteps}</span>
+                <span class="step-title">
+                    <template if:true={isStep1}>Package Information</template>
+                    <template if:true={isStep2}>Select Components</template>
+                    <template if:true={isStep3}>Configure Deployment</template>
+                    <template if:true={isStep4}>Review & Deploy</template>
+                </span>
+            </div>
+            <div class="slds-progress-bar slds-progress-bar_medium" role="progressbar" aria-valuenow={currentStep} aria-valuemin="1" aria-valuemax={totalSteps}>
+                <div class="slds-progress-bar__value" style="width: 25%;"></div>
+            </div>
+        </div>
+
+        <!-- Step 1: Package Information -->
+        <template if:true={isStep1}>
+            <div class="slds-box slds-m-bottom_medium">
+                <h3 class="slds-text-title_bold slds-m-bottom_small">Package Information</h3>
+                
+                <lightning-input
+                    label="Package Name"
+                    type="text"
+                    value={packageName}
+                    onchange={handlePackageNameChange}
+                    class="slds-m-bottom_small"
+                    required></lightning-input>
+                
+                <lightning-textarea
+                    label="Description"
+                    value={packageDescription}
+                    onchange={handlePackageDescriptionChange}
+                    class="slds-m-bottom_small"
+                    rows="3"></lightning-textarea>
+                
+                <lightning-combobox
+                    label="Source Org (Optional)"
+                    value={selectedSourceOrg}
+                    options={targetOrgs}
+                    onchange={handleSourceOrgChange}
+                    class="slds-m-bottom_small"></lightning-combobox>
+                
+                <lightning-combobox
+                    label="Target Org"
+                    value={selectedTargetOrg}
+                    options={targetOrgs}
+                    onchange={handleTargetOrgChange}
+                    class="slds-m-bottom_small"
+                    required></lightning-combobox>
+            </div>
+        </template>
+
+        <!-- Step 2: Select Components -->
+        <template if:true={isStep2}>
+            <div class="slds-box slds-m-bottom_medium">
+                <h3 class="slds-text-title_bold slds-m-bottom_small">Select Components</h3>
+                
+                <lightning-dual-listbox
+                    label="Metadata Types"
+                    source-label="Available"
+                    selected-label="Selected"
+                    options={metadataTypes}
+                    value={selectedMetadataTypes}
+                    onchange={handleMetadataTypeChange}
+                    class="slds-m-bottom_small"></lightning-dual-listbox>
+                
+                <p class="slds-text-body_small slds-text-color_weak">
+                    Select the components to include in this deployment package.
+                </p>
+            </div>
+        </template>
+
+        <!-- Step 3: Configure Deployment -->
+        <template if:true={isStep3}>
+            <div class="slds-box slds-m-bottom_medium">
+                <h3 class="slds-text-title_bold slds-m-bottom_small">Deployment Options</h3>
+                
+                <lightning-combobox
+                    label="Test Level"
+                    value={deploymentOptions.testLevel}
+                    options={testLevelOptions}
+                    onchange={handleDeploymentOptionChange}
+                    data-field="testLevel"
+                    class="slds-m-bottom_small"></lightning-combobox>
+                
+                <lightning-input
+                    type="checkbox"
+                    label="Run Tests"
+                    checked={deploymentOptions.runTests}
+                    onchange={handleDeploymentOptionChange}
+                    data-field="runTests"
+                    class="slds-m-bottom_small"></lightning-input>
+                
+                <lightning-input
+                    type="checkbox"
+                    label="Rollback on Error"
+                    checked={deploymentOptions.rollbackOnError}
+                    onchange={handleDeploymentOptionChange}
+                    data-field="rollbackOnError"
+                    class="slds-m-bottom_small"></lightning-input>
+                
+                <lightning-input
+                    type="checkbox"
+                    label="Check Only"
+                    checked={deploymentOptions.checkOnly}
+                    onchange={handleDeploymentOptionChange}
+                    data-field="checkOnly"
+                    class="slds-m-bottom_small"></lightning-input>
+                
+                <lightning-input
+                    type="checkbox"
+                    label="Ignore Warnings"
+                    checked={deploymentOptions.ignoreWarnings}
+                    onchange={handleDeploymentOptionChange}
+                    data-field="ignoreWarnings"
+                    class="slds-m-bottom_small"></lightning-input>
+
+                <!-- Validation Errors -->
+                <template if:true={validationErrors}>
+                    <lightning-alert variant="error" class="slds-m-top_medium">
+                        <h4>Validation Issues:</h4>
+                        <ul>
+                            <template for:each={validationErrors} for:item="issue">
+                                <li key={issue}>{issue}</li>
+                            </template>
+                        </ul>
+                    </lightning-alert>
+                </template>
+            </div>
+        </template>
+
+        <!-- Step 4: Review & Deploy -->
+        <template if:true={isStep4}>
+            <div class="slds-box slds-m-bottom_medium">
+                <h3 class="slds-text-title_bold slds-m-bottom_small">Review Package</h3>
+                
+                <lightning-record-view-form record-id={packageId}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name="Name"></lightning-output-field>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-output-field field-name="Status__c"></lightning-output-field>
+                        </div>
+                    </div>
+                </lightning-record-view-form>
+
+                <template if:true={packageXml}>
+                    <div class="slds-m-top_medium">
+                        <h4 class="slds-text-title">Package XML Preview</h4>
+                        <pre class="package-xml-preview">{packageXml}</pre>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Error Alert -->
+        <template if:true={error}>
+            <lightning-alert variant="error" class="slds-m-bottom_medium">
+                {error}
+            </lightning-alert>
+        </template>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+
+        <!-- Buttons -->
+        <div class="slds-box slds-box_border">
+            <div class="slds-float_right">
+                <lightning-button
+                    variant="neutral"
+                    label="Previous"
+                    onclick={handlePreviousStep}
+                    disabled={isPreviousDisabled}
+                    class="slds-m-right_small"></lightning-button>
+                
+                <template if:false={isLastStep}>
+                    <lightning-button
+                        variant="brand"
+                        label="Next"
+                        onclick={handleNextStep}
+                        disabled={isNextDisabled}
+                        class="slds-m-right_small"></lightning-button>
+                </template>
+                
+                <template if:true={isLastStep}>
+                    <lightning-button
+                        variant="success"
+                        label="Create & Deploy"
+                        onclick={handleCreateAndDeploy}
+                        loading={isLoading}></lightning-button>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>

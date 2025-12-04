@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Org Connection</label>
+    <nameField>
+        <label>Connection Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Org Connections</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    
+    <!-- Fields -->
+    <fields>
+        <fullName>OrgName__c</fullName>
+        <label>Org Name</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>OrgType__c</fullName>
+        <label>Org Type</label>
+        <required>true</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Production</fullName>
+                    <default>false</default>
+                    <label>Production</label>
+                </value>
+                <value>
+                    <fullName>Sandbox</fullName>
+                    <default>true</default>
+                    <label>Sandbox</label>
+                </value>
+                <value>
+                    <fullName>Developer</fullName>
+                    <default>false</default>
+                    <label>Developer</label>
+                </value>
+                <value>
+                    <fullName>Scratch</fullName>
+                    <default>false</default>
+                    <label>Scratch</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>InstanceURL__c</fullName>
+        <label>Instance URL</label>
+        <required>true</required>
+        <type>Url</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>IsActive__c</fullName>
+        <label>Is Active</label>
+        <defaultValue>true</defaultValue>
+        <type>Checkbox</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>NamedCredential__c</fullName>
+        <label>Named Credential</label>
+        <required>true</required>
+        <type>Text</type>
+        <length>255</length>
+        <externalId>false</externalId>
+        <description>Reference to the Named Credential for authentication</description>
+    </fields>
+    
+    <fields>
+        <fullName>LastSyncDate__c</fullName>
+        <label>Last Sync Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>SyncFrequency__c</fullName>
+        <label>Sync Frequency</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Hourly</fullName>
+                    <default>false</default>
+                    <label>Hourly</label>
+                </value>
+                <value>
+                    <fullName>Daily</fullName>
+                    <default>true</default>
+                    <label>Daily</label>
+                </value>
+                <value>
+                    <fullName>Weekly</fullName>
+                    <default>false</default>
+                    <label>Weekly</label>
+                </value>
+                <value>
+                    <fullName>Manual</fullName>
+                    <default>false</default>
+                    <label>Manual</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>APIVersion__c</fullName>
+        <label>API Version</label>
+        <type>Number</type>
+        <precision>4</precision>
+        <scale>1</scale>
+        <defaultValue>60.0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>Description__c</fullName>
+        <label>Description</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+    </fields>
+    
+    <fields>
+        <fullName>ConnectionStatus__c</fullName>
+        <label>Connection Status</label>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Connected</fullName>
+                    <default>false</default>
+                    <label>Connected</label>
+                </value>
+                <value>
+                    <fullName>Disconnected</fullName>
+                    <default>true</default>
+                    <label>Disconnected</label>
+                </value>
+                <value>
+                    <fullName>Error</fullName>
+                    <default>false</default>
+                    <label>Error</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    
+    <fields>
+        <fullName>LastTestDate__c</fullName>
+        <label>Last Test Date</label>
+        <type>DateTime</type>
+        <externalId>false</externalId>
+    </fields>
+    
+    <fields>
+        <fullName>TotalAuditTrailRecords__c</fullName>
+        <label>Total Audit Trail Records</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+    </fields>
+    
+    <!-- Validation Rules -->
+    <validationRules>
+        <fullName>Valid_Instance_URL</fullName>
+        <active>true</active>
+        <errorConditionFormula>
+            AND(
+                NOT(ISBLANK(InstanceURL__c)),
+                NOT(BEGINS(InstanceURL__c, "https://"))
+            )
+        </errorConditionFormula>
+        <errorDisplayField>InstanceURL__c</errorDisplayField>
+        <errorMessage>Instance URL must start with https://</errorMessage>
+    </validationRules>
+    
+    <!-- Field Sets -->
+    <fieldSets>
+        <fullName>Connection_Details</fullName>
+        <description>Fields to display in connection details view</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>OrgName__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>OrgType__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>ConnectionStatus__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>LastSyncDate__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Connection Details</label>
+    </fieldSets>
+    
+    <!-- Compact Layout -->
+    <compactLayouts>
+        <fullName>Org_Connection_Compact</fullName>
+        <fields>Name</fields>
+        <fields>OrgName__c</fields>
+        <fields>OrgType__c</fields>
+        <fields>ConnectionStatus__c</fields>
+        <label>Org Connection Compact</label>
+    </compactLayouts>
+</CustomObject>
