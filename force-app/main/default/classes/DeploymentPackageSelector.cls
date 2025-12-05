@@ -27,18 +27,23 @@ public class DeploymentPackageSelector extends ApplicationSelector {
     public override String getOrderBy() {
         return 'Version__c DESC, CreatedDate DESC';
     }
-    
-     public List<OrgConnection__c> selectActive() {
-        String whereClause = 'IsActive__c = true';
+
+    /**
+     * @description Select all packages where Status__c = 'Ready'
+     */
+    @AuraEnabled(cacheable=true)
+    public  List<DeploymentPackage__c> getselectActive() {
+        String whereClause = 'Status__c = \'Ready\'';
         return Database.query(buildQueryString(null, whereClause));
     }
+
     /**
      * @description Select packages by status
      */
     public List<DeploymentPackage__c> selectByStatus(String status, Integer limitRows) {
-        String whereClause = 'Status__c = :status';
-        String query = buildQueryString(null, whereClause);
+        String whereClause = 'Status__c = \'' + String.escapeSingleQuotes(status) + '\'';
         
+        String query = buildQueryString(null, whereClause);
         if (limitRows != null && limitRows > 0) {
             query += ' LIMIT ' + limitRows;
         }
@@ -47,12 +52,12 @@ public class DeploymentPackageSelector extends ApplicationSelector {
     }
     
     /**
-     * @description Select latest package versions
+     * @description Select latest versions of a given package name
      */
     public List<DeploymentPackage__c> selectLatestVersions(String packageName, Integer limitRows) {
-        String whereClause = 'PackageName__c = :packageName';
-        String query = buildQueryString(null, whereClause);
+        String whereClause = 'PackageName__c = \'' + String.escapeSingleQuotes(packageName) + '\'';
         
+        String query = buildQueryString(null, whereClause);
         if (limitRows != null && limitRows > 0) {
             query += ' LIMIT ' + limitRows;
         }
@@ -61,7 +66,7 @@ public class DeploymentPackageSelector extends ApplicationSelector {
     }
     
     /**
-     * @description Select package templates for reuse
+     * @description Select all template packages
      */
     public List<DeploymentPackage__c> selectTemplates() {
         String whereClause = 'IsTemplate__c = true';

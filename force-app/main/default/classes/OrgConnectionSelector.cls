@@ -21,12 +21,10 @@ public class OrgConnectionSelector extends ApplicationSelector {
         };
     }
     
+    
     /**
      * @description Select active org connections
      */
-   
-   
-   
      @AuraEnabled
      Public static List<OrgConnection__c> selectActive() {
         String whereClause = 'IsActive__c = true';

@@ -1,6 +1,6 @@
 import { LightningElement, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
-import getDeploymentPackages from '@salesforce/apex/DeploymentPackageSelector.selectActive';
+import getDeploymentPackages from '@salesforce/apex/DeploymentPackageSelector.getselectActive';
 
 export default class DeploymentPackageViewer extends LightningElement {
     deploymentPackages = [];
