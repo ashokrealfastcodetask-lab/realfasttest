@@ -82,6 +82,50 @@
     </fields>
     
     <fields>
+        <fullName>StatusMessage__c</fullName>
+        <label>Status Message</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <externalId>false</externalId>
+        <description>Detailed message about current deployment status</description>
+    </fields>
+    
+    <fields>
+        <fullName>DeploymentType__c</fullName>
+        <label>Deployment Type</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Full</fullName>
+                    <default>false</default>
+                    <label>Full</label>
+                </value>
+                <value>
+                    <fullName>Partial</fullName>
+                    <default>true</default>
+                    <label>Partial</label>
+                </value>
+                <value>
+                    <fullName>Rollback</fullName>
+                    <default>false</default>
+                    <label>Rollback</label>
+                </value>
+                <value>
+                    <fullName>Validation</fullName>
+                    <default>false</default>
+                    <label>Validation</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <description>Type of deployment: Full, Partial, Rollback, or Validation</description>
+    </fields>
+    
+    <fields>
         <fullName>DeploymentStartDate__c</fullName>
         <label>Deployment Start Date</label>
         <type>DateTime</type>

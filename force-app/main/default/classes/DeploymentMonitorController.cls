@@ -37,9 +37,9 @@ public with sharing class DeploymentMonitorController {
             }
             
             String query = 'SELECT Id, Name, DeploymentPackage__c, SourceOrg__c, TargetOrg__c, ' +
-                          'DeploymentStatus__c, RequestedBy__c, DeploymentOptions__c, ' +
+                          'DeploymentStatus__c, ' +
                           'RunTests__c, TestsExecuted__c, TestsPassed__c, TestsFailed__c, ' +
-                          'StartTime__c, EndTime__c, CreatedDate, LastModifiedDate ' +
+                          'CreatedDate, LastModifiedDate ' +
                           'FROM DeploymentHistory__c ' + whereClause + 
                           ' ORDER BY CreatedDate DESC';
             
@@ -64,9 +64,9 @@ public with sharing class DeploymentMonitorController {
             DeploymentHistory__c history = [
                 SELECT Id, Name, DeploymentPackage__c, DeploymentPackage__r.Name,
                        SourceOrg__c, SourceOrg__r.OrgName__c, TargetOrg__c, TargetOrg__r.OrgName__c,
-                       DeploymentStatus__c, RequestedBy__c, RequestedBy__r.Name, CreatedDate,
-                       StartTime__c, EndTime__c, RunTests__c, TestsExecuted__c, TestsPassed__c,
-                       TestsFailed__c, DeploymentOptions__c, ComponentsDeployed__c, ComponentsFailed__c
+                       DeploymentStatus__c, CreatedDate, CreatedBy.Name,
+                       RunTests__c, TestsExecuted__c, TestsPassed__c,
+                       TestsFailed__c
                 FROM DeploymentHistory__c
                 WHERE Id = :deploymentId
                 LIMIT 1
@@ -79,16 +79,12 @@ public with sharing class DeploymentMonitorController {
             detail.sourceOrgName = history.SourceOrg__r?.OrgName__c;
             detail.targetOrgName = history.TargetOrg__r.OrgName__c;
             detail.status = history.DeploymentStatus__c;
-            detail.requestedBy = history.RequestedBy__r.Name;
+            detail.requestedBy = history.CreatedBy.Name;
             detail.createdDate = history.CreatedDate;
-            detail.startTime = history.StartTime__c;
-            detail.endTime = history.EndTime__c;
             detail.runTests = history.RunTests__c;
             detail.testsExecuted = (Integer)history.TestsExecuted__c;
             detail.testsPassed = (Integer)history.TestsPassed__c;
             detail.testsFailed = (Integer)history.TestsFailed__c;
-            detail.componentDeployed = (Integer)history.ComponentsDeployed__c;
-            detail.componentFailed = (Integer)history.ComponentsFailed__c;
             
             return detail;
         } catch (Exception e) {
@@ -115,21 +111,21 @@ public with sharing class DeploymentMonitorController {
             ];
             
             List<PackageComponent__c> pkgComponents = [
-                SELECT Id, ComponentName__c, MetadataType__c, DeploymentStatus__c,
-                       DisplayName__c, DeploymentSequence__c
+                SELECT Id, ComponentName__c, MetadataType__c, DeploymentStatus__c
                 FROM PackageComponent__c
                 WHERE DeploymentPackage__c = :history.DeploymentPackage__c
-                ORDER BY DeploymentSequence__c
+                ORDER BY ComponentName__c
             ];
             
+            Integer sequence = 1;
             for (PackageComponent__c comp : pkgComponents) {
                 ComponentStatus compStatus = new ComponentStatus();
                 compStatus.componentId = comp.Id;
                 compStatus.name = comp.ComponentName__c;
                 compStatus.type = comp.MetadataType__c;
-                compStatus.displayName = comp.DisplayName__c;
+                compStatus.displayName = comp.ComponentName__c; // Using ComponentName as display name
                 compStatus.status = comp.DeploymentStatus__c;
-                compStatus.sequence = (Integer)comp.DeploymentSequence__c;
+                compStatus.sequence = sequence++;
                 
                 components.add(compStatus);
             }
@@ -179,7 +175,6 @@ public with sharing class DeploymentMonitorController {
             }
             
             history.DeploymentStatus__c = 'Canceled';
-            history.EndTime__c = DateTime.now();
             
             update history;
             
@@ -219,7 +214,6 @@ public with sharing class DeploymentMonitorController {
             DeploymentHistory__c newHistory = new DeploymentHistory__c();
             newHistory.DeploymentPackage__c = history.DeploymentPackage__c;
             newHistory.DeploymentStatus__c = 'Queued';
-            newHistory.RequestedBy__c = UserInfo.getUserId();
             
             insert newHistory;
             
@@ -279,15 +273,6 @@ public with sharing class DeploymentMonitorController {
                 metrics.successRate = (Decimal)metrics.successfulDeployments / metrics.totalDeployments * 100;
             }
             
-            // Get average components deployed
-            List<AggregateResult> compResults = Database.query(
-                'SELECT AVG(ComponentsDeployed__c) avgComp FROM DeploymentHistory__c' + whereClause
-            );
-            
-            if (!compResults.isEmpty()) {
-                metrics.avgComponentsDeployed = (Integer)compResults[0].get('avgComp');
-            }
-            
             return metrics;
         } catch (Exception e) {
             throw new AuraHandledException('Error calculating deployment metrics: ' + e.getMessage());
@@ -303,26 +288,21 @@ public with sharing class DeploymentMonitorController {
     public static DeploymentStatusUpdate pollDeploymentStatus(String deploymentId) {
         try {
             DeploymentHistory__c history = [
-                SELECT Id, DeploymentStatus__c, TestsExecuted__c, TestsPassed__c, TestsFailed__c,
-                       ComponentsDeployed__c, ComponentsFailed__c, StartTime__c, EndTime__c
+                SELECT Id, DeploymentStatus__c, TestsExecuted__c, TestsPassed__c, TestsFailed__c
                 FROM DeploymentHistory__c
                 WHERE Id = :deploymentId
                 LIMIT 1
             ];
             
-            DeploymentStatusUpdate update = new DeploymentStatusUpdate();
-            update.deploymentId = history.Id;
-            update.status = history.DeploymentStatus__c;
-            update.testsExecuted = (Integer)history.TestsExecuted__c;
-            update.testsPassed = (Integer)history.TestsPassed__c;
-            update.testsFailed = (Integer)history.TestsFailed__c;
-            update.componentDeployed = (Integer)history.ComponentsDeployed__c;
-            update.componentFailed = (Integer)history.ComponentsFailed__c;
-            update.startTime = history.StartTime__c;
-            update.endTime = history.EndTime__c;
-            update.timestamp = DateTime.now();
+            DeploymentStatusUpdate statusUpdate = new DeploymentStatusUpdate();
+            statusUpdate.deploymentId = history.Id;
+            statusUpdate.status = history.DeploymentStatus__c;
+            statusUpdate.testsExecuted = (Integer)history.TestsExecuted__c;
+            statusUpdate.testsPassed = (Integer)history.TestsPassed__c;
+            statusUpdate.testsFailed = (Integer)history.TestsFailed__c;
+            statusUpdate.timestamp = DateTime.now();
             
-            return update;
+            return statusUpdate;
         } catch (Exception e) {
             throw new AuraHandledException('Error polling deployment status: ' + e.getMessage());
         }
@@ -342,14 +322,10 @@ public with sharing class DeploymentMonitorController {
         @AuraEnabled public String status {get; set;}
         @AuraEnabled public String requestedBy {get; set;}
         @AuraEnabled public DateTime createdDate {get; set;}
-        @AuraEnabled public DateTime startTime {get; set;}
-        @AuraEnabled public DateTime endTime {get; set;}
         @AuraEnabled public Boolean runTests {get; set;}
         @AuraEnabled public Integer testsExecuted {get; set;}
         @AuraEnabled public Integer testsPassed {get; set;}
         @AuraEnabled public Integer testsFailed {get; set;}
-        @AuraEnabled public Integer componentDeployed {get; set;}
-        @AuraEnabled public Integer componentFailed {get; set;}
     }
     
     /**
@@ -402,10 +378,6 @@ public with sharing class DeploymentMonitorController {
         @AuraEnabled public Integer testsExecuted {get; set;}
         @AuraEnabled public Integer testsPassed {get; set;}
         @AuraEnabled public Integer testsFailed {get; set;}
-        @AuraEnabled public Integer componentDeployed {get; set;}
-        @AuraEnabled public Integer componentFailed {get; set;}
-        @AuraEnabled public DateTime startTime {get; set;}
-        @AuraEnabled public DateTime endTime {get; set;}
         @AuraEnabled public DateTime timestamp {get; set;}
     }
 }

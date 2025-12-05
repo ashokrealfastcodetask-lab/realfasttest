@@ -1,4 +1,3 @@
-// auditTrailViewer.js
 import { LightningElement, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
@@ -13,6 +12,7 @@ export default class AuditTrailViewer extends LightningElement {
     @track orgConnections = [];
     @track isLoading = false;
     @track error;
+   
     
     // Filter properties
     @track selectedOrgId = '';

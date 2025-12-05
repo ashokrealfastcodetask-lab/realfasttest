@@ -24,7 +24,11 @@ public class OrgConnectionSelector extends ApplicationSelector {
     /**
      * @description Select active org connections
      */
-    public List<OrgConnection__c> selectActive() {
+   
+   
+   
+     @AuraEnabled
+     Public static List<OrgConnection__c> selectActive() {
         String whereClause = 'IsActive__c = true';
         return Database.query(buildQueryString(null, whereClause));
     }
@@ -37,5 +41,27 @@ public class OrgConnectionSelector extends ApplicationSelector {
                            '(LastSyncDate__c = null OR ' +
                            'LastSyncDate__c < LAST_N_HOURS:1)';
         return Database.query(buildQueryString(null, whereClause));
+    }
+    
+    /**
+     * @description Select org connections by list of IDs
+     * @param orgConnectionIds List of org connection IDs
+     * @return List of OrgConnection__c records
+     */
+    public List<OrgConnection__c> selectByIds(List<String> orgConnectionIds) {
+        if (orgConnectionIds == null || orgConnectionIds.isEmpty()) {
+            return new List<OrgConnection__c>();
+        }
+        
+        Set<Id> idSet = new Set<Id>();
+        for (String idStr : orgConnectionIds) {
+            if (String.isNotBlank(idStr)) {
+                idSet.add((Id)idStr);
+            }
+        }
+        
+        String whereClause = 'Id IN :idSet';
+        String query = buildQueryString(null, whereClause);
+        return Database.query(query);
     }
 }

@@ -81,6 +81,17 @@
     </fields>
     
     <fields>
+        <fullName>Order__c</fullName>
+        <label>Order</label>
+        <type>Number</type>
+        <precision>5</precision>
+        <scale>0</scale>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <description>Deployment order sequence for this component</description>
+    </fields>
+    
+    <fields>
         <fullName>DeploymentStatus__c</fullName>
         <label>Deployment Status</label>
         <type>Picklist</type>

@@ -28,6 +28,10 @@ public class DeploymentPackageSelector extends ApplicationSelector {
         return 'Version__c DESC, CreatedDate DESC';
     }
     
+     public List<OrgConnection__c> selectActive() {
+        String whereClause = 'IsActive__c = true';
+        return Database.query(buildQueryString(null, whereClause));
+    }
     /**
      * @description Select packages by status
      */

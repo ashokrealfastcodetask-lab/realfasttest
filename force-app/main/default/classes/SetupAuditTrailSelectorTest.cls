@@ -1,10 +1,9 @@
 /**
- * @description Test class for AuditTrailViewController (Selector)
+ * @description Test class for SetupAuditTrailSelector
  * Provides comprehensive test coverage for audit trail selector methods
- * Note: The class is named AuditTrailViewController but functions as a selector
  */
 @isTest
-private class AuditTrailViewControllerTest {
+private class SetupAuditTrailSelectorTest {
     
     /**
      * @description Creates test data for selector tests
@@ -79,7 +78,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testGetSObjectType() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         Schema.SObjectType result = selector.getSObjectType();
@@ -95,7 +94,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testGetSObjectFieldList() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<Schema.SObjectField> fields = selector.getSObjectFieldList();
@@ -113,7 +112,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectAll_DefaultLimit() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectAll();
@@ -128,7 +127,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectAll_CustomLimit() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectAll(10);
@@ -143,7 +142,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectAll_ZeroLimit() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectAll(0);
@@ -158,7 +157,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectAllOrderByDate() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectAllOrderByDate(5);
@@ -183,7 +182,7 @@ private class AuditTrailViewControllerTest {
         DateTime startDate = DateTime.now().addDays(-10);
         DateTime endDate = DateTime.now();
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByDateRange(startDate, endDate, org.Id);
@@ -208,7 +207,7 @@ private class AuditTrailViewControllerTest {
         DateTime startDate = DateTime.now().addDays(-7);
         DateTime endDate = DateTime.now();
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByDateRange(startDate, endDate, null);
@@ -229,7 +228,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectUnprocessed() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectUnprocessed(null);
@@ -249,7 +248,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectUnprocessed_WithLimit() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectUnprocessed(10);
@@ -270,7 +269,7 @@ private class AuditTrailViewControllerTest {
     @isTest
     static void testSelectByMetadataType_WithOrgFilter() {
         OrgConnection__c org = [SELECT Id FROM OrgConnection__c WHERE OrgName__c = 'Test Org 1' LIMIT 1];
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByMetadataType('ApexClass', org.Id);
@@ -291,7 +290,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectByMetadataType_NoOrgFilter() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByMetadataType('ApexTrigger', null);
@@ -318,7 +317,7 @@ private class AuditTrailViewControllerTest {
             trailIds.add(trail.Id);
         }
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByIds(trailIds);
@@ -343,7 +342,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectByIds_EmptyList() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByIds(new List<String>());
@@ -358,7 +357,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testSelectByIds_NullList() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByIds(null);
@@ -382,7 +381,7 @@ private class AuditTrailViewControllerTest {
         trailIds.add(''); // Add blank string
         trailIds.add(null); // Add null
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectByIds(trailIds);
@@ -399,7 +398,7 @@ private class AuditTrailViewControllerTest {
     static void testGetCountByOrg() {
         List<OrgConnection__c> orgs = [SELECT Id FROM OrgConnection__c ORDER BY OrgName__c];
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         Map<Id, Integer> results = selector.getCountByOrg();
@@ -421,7 +420,7 @@ private class AuditTrailViewControllerTest {
         // Delete all audit trails
         delete [SELECT Id FROM SetupAuditTrail__c];
         
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         Map<Id, Integer> results = selector.getCountByOrg();
@@ -436,7 +435,7 @@ private class AuditTrailViewControllerTest {
      */
     @isTest
     static void testFieldsAreRetrieved() {
-        AuditTrailViewController selector = new AuditTrailViewController();
+        SetupAuditTrailSelector selector = new SetupAuditTrailSelector();
         
         Test.startTest();
         List<SetupAuditTrail__c> results = selector.selectAll(1);

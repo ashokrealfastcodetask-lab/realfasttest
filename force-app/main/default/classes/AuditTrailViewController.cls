@@ -52,11 +52,13 @@ public with sharing class AuditTrailViewController {
                 trails = filterByProcessedStatus(trails, true);
             }
             
-            // Limit results
-            if (limitRows != null && limitRows > 0) {
-                trails = trails.size() > limitRows 
-                    ? trails.subList(0, limitRows) 
-                    : trails;
+            // Limit results - FIXED: Apex doesn't have subList()
+            if (limitRows != null && limitRows > 0 && trails.size() > limitRows) {
+                List<SetupAuditTrail__c> limitedTrails = new List<SetupAuditTrail__c>();
+                for (Integer i = 0; i < limitRows; i++) {
+                    limitedTrails.add(trails[i]);
+                }
+                trails = limitedTrails;
             }
             
             return trails;
@@ -133,9 +135,9 @@ public with sharing class AuditTrailViewController {
             
             SyncResult result = new SyncResult();
             
-            // Get org connection details
+            // Get org connection details - FIXED: Changed to selectByIds
             OrgConnectionSelector selector = new OrgConnectionSelector();
-            List<OrgConnection__c> orgs = selector.selectById(new List<String>{orgConnectionId});
+            List<OrgConnection__c> orgs = selector.selectByIds(new List<String>{orgConnectionId});
             
             if (orgs.isEmpty()) {
                 result.success = false;
@@ -173,15 +175,20 @@ public with sharing class AuditTrailViewController {
             List<String> metadataTypes = new List<String>();
             Set<String> uniqueTypes = new Set<String>();
             
-            List<SetupAuditTrail__c> trails = [
+            // FIXED: Changed to AggregateResult
+            List<AggregateResult> results = [
                 SELECT MetadataType__c 
                 FROM SetupAuditTrail__c 
                 WHERE MetadataType__c != null 
                 GROUP BY MetadataType__c
+                LIMIT 1000
             ];
             
-            for (SetupAuditTrail__c trail : trails) {
-                uniqueTypes.add(trail.MetadataType__c);
+            for (AggregateResult result : results) {
+                String metadataType = (String)result.get('MetadataType__c');
+                if (String.isNotBlank(metadataType)) {
+                    uniqueTypes.add(metadataType);
+                }
             }
             
             metadataTypes.addAll(uniqueTypes);
@@ -203,15 +210,20 @@ public with sharing class AuditTrailViewController {
             List<String> actions = new List<String>();
             Set<String> uniqueActions = new Set<String>();
             
-            List<SetupAuditTrail__c> trails = [
+            // FIXED: Changed to AggregateResult
+            List<AggregateResult> results = [
                 SELECT Action__c 
                 FROM SetupAuditTrail__c 
                 WHERE Action__c != null 
                 GROUP BY Action__c
+                LIMIT 1000
             ];
             
-            for (SetupAuditTrail__c trail : trails) {
-                uniqueActions.add(trail.Action__c);
+            for (AggregateResult result : results) {
+                String action = (String)result.get('Action__c');
+                if (String.isNotBlank(action)) {
+                    uniqueActions.add(action);
+                }
             }
             
             actions.addAll(uniqueActions);

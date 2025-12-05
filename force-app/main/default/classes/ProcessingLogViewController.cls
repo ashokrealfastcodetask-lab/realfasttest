@@ -49,8 +49,8 @@ public with sharing class ProcessingLogViewController {
             }
             
             String query = 'SELECT Id, Name, OrgConnection__c, ProcessType__c, LogLevel__c, ' +
-                          'Status__c, Message__c, DurationMilliseconds__c, CreatedDate, ' +
-                          'SuccessRate__c, ErrorCount__c, BatchJobId__c ' +
+                          'Status__c, LogMessage__c, DurationMilliseconds__c, CreatedDate, ' +
+                          'SuccessRate__c, RetryCount__c, BatchJobId__c ' +
                           'FROM ProcessingLog__c ' + whereClause + 
                           ' ORDER BY CreatedDate DESC';
             
@@ -78,7 +78,7 @@ public with sharing class ProcessingLogViewController {
                 SELECT ProcessType__c 
                 FROM ProcessingLog__c 
                 WHERE ProcessType__c != null 
-                GROUP BY ProcessType__c
+                LIMIT 10000
             ];
             
             for (ProcessingLog__c log : logs) {
@@ -134,9 +134,9 @@ public with sharing class ProcessingLogViewController {
         try {
             return [
                 SELECT Id, Name, OrgConnection__c, ProcessType__c, LogLevel__c, Status__c,
-                       Message__c, DurationMilliseconds__c, SuccessRate__c, ErrorCount__c,
-                       CreatedDate, LastModifiedDate, BatchJobId__c, RelatedEntityId__c,
-                       StackTrace__c, RetryCount__c, NextRetryTime__c
+                       LogMessage__c, DurationMilliseconds__c, SuccessRate__c, RetryCount__c,
+                       CreatedDate, LastModifiedDate, BatchJobId__c,
+                       StackTrace__c
                 FROM ProcessingLog__c
                 WHERE Id = :logId
                 LIMIT 1
@@ -236,7 +236,6 @@ public with sharing class ProcessingLogViewController {
             
             // Update retry count
             log.RetryCount__c = (log.RetryCount__c != null ? log.RetryCount__c : 0) + 1;
-            log.NextRetryTime__c = DateTime.now().addMinutes(5);
             log.Status__c = 'Queued';
             
             update log;
@@ -264,37 +263,50 @@ public with sharing class ProcessingLogViewController {
             }
             
             List<ProcessingLog__c> logs = [
-                SELECT Id, Name, ProcessType__c, LogLevel__c, Status__c, Message__c,
-                       DurationMilliseconds__c, CreatedDate, SuccessRate__c, ErrorCount__c
+                SELECT Id, Name, ProcessType__c, LogLevel__c, Status__c, LogMessage__c,
+                       DurationMilliseconds__c, CreatedDate, SuccessRate__c, RetryCount__c
                 FROM ProcessingLog__c
                 WHERE Id IN :logIds
                 ORDER BY CreatedDate DESC
             ];
             
-            StringBuilder csv = new StringBuilder();
+            String csvContent = '';
             
             // Add header
-            csv.append('Log ID,Name,Process Type,Log Level,Status,Message,');
-            csv.append('Duration (ms),Created Date,Success Rate,Error Count\n');
+            csvContent += 'Log ID,Name,Process Type,Log Level,Status,Message,';
+            csvContent += 'Duration (ms),Created Date,Success Rate,Retry Count\n';
             
             // Add data rows
             for (ProcessingLog__c log : logs) {
-                csv.append('"' + log.Id + '",');
-                csv.append('"' + String.escapeSingleQuotes(log.Name) + '",');
-                csv.append('"' + log.ProcessType__c + '",');
-                csv.append('"' + log.LogLevel__c + '",');
-                csv.append('"' + log.Status__c + '",');
-                csv.append('"' + String.escapeSingleQuotes(log.Message__c) + '",');
-                csv.append(log.DurationMilliseconds__c + ',');
-                csv.append('"' + log.CreatedDate.format() + '",');
-                csv.append(log.SuccessRate__c + ',');
-                csv.append(log.ErrorCount__c + '\n');
+                csvContent += '"' + log.Id + '",';
+                csvContent += '"' + escapeCsvField(log.Name) + '",';
+                csvContent += '"' + (log.ProcessType__c != null ? log.ProcessType__c : '') + '",';
+                csvContent += '"' + (log.LogLevel__c != null ? log.LogLevel__c : '') + '",';
+                csvContent += '"' + (log.Status__c != null ? log.Status__c : '') + '",';
+                csvContent += '"' + escapeCsvField(log.LogMessage__c) + '",';
+                csvContent += (log.DurationMilliseconds__c != null ? String.valueOf(log.DurationMilliseconds__c) : '0') + ',';
+                csvContent += '"' + log.CreatedDate.format() + '",';
+                csvContent += (log.SuccessRate__c != null ? String.valueOf(log.SuccessRate__c) : '0') + ',';
+                csvContent += (log.RetryCount__c != null ? String.valueOf(log.RetryCount__c) : '0') + '\n';
             }
             
-            return csv.toString();
+            return csvContent;
         } catch (Exception e) {
             throw new AuraHandledException('Error exporting logs: ' + e.getMessage());
         }
+    }
+    
+    /**
+     * @description Helper method to escape CSV field values
+     * @param fieldValue The field value to escape
+     * @return Escaped field value
+     */
+    private static String escapeCsvField(String fieldValue) {
+        if (fieldValue == null) {
+            return '';
+        }
+        // Replace double quotes with two double quotes for CSV escaping
+        return fieldValue.replace('"', '""');
     }
     
     // ==================== Inner Classes ====================

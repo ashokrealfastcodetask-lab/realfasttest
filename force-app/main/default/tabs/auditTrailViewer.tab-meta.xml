@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Audit Trail Viewer</label>
+    <lwcComponent>c:auditTrailViewer</lwcComponent>
+    <motif>Custom58: Form</motif>
+</CustomTab>

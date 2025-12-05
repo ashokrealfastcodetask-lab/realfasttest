@@ -58,12 +58,12 @@ public with sharing class DeploymentWizardController {
             
             // Create deployment package
             DeploymentPackage__c deployPkg = new DeploymentPackage__c();
-            deployPkg.Name = packageName;
+         //   deployPkg.Name = packageName;
             deployPkg.Description__c = description;
             deployPkg.SourceOrg__c = String.isNotBlank(sourceOrgId) ? sourceOrgId : null;
             deployPkg.TargetOrg__c = targetOrgId;
             deployPkg.Status__c = 'Draft';
-            deployPkg.CreatedBy__c = UserInfo.getUserId();
+          //  deployPkg.CreatedBy__c = UserInfo.getUserId();
             deployPkg.ComponentCount__c = selectedComponents.size();
             
             insert deployPkg;
@@ -77,8 +77,8 @@ public with sharing class DeploymentWizardController {
                 pkgComp.DeploymentPackage__c = deployPkg.Id;
                 pkgComp.MetadataType__c = comp.metadataType;
                 pkgComp.ComponentName__c = comp.componentName;
-                pkgComp.DisplayName__c = comp.displayName;
-                pkgComp.DeploymentSequence__c = sequence;
+            //    pkgComp.DisplayName__c = comp.displayName;
+            //    pkgComp.DeploymentSequence__c = sequence;
                 pkgComp.DeploymentStatus__c = 'Pending';
                 pkgComp.IsIncluded__c = true;
                 
@@ -224,15 +224,15 @@ public with sharing class DeploymentWizardController {
             
             // Create deployment history record
             DeploymentHistory__c history = new DeploymentHistory__c();
-            history.Name = 'Deployment - ' + pkg.Name;
+           // history.Name = 'Deployment - ' + pkg.Name;
             history.DeploymentPackage__c = packageId;
             history.SourceOrg__c = null; // Would be populated with actual source
             history.TargetOrg__c = pkg.TargetOrg__c;
             history.DeploymentStatus__c = 'Queued';
-            history.RequestedBy__c = UserInfo.getUserId();
-            history.DeploymentOptions__c = String.isNotEmpty(options.testLevel) 
-                ? options.testLevel 
-                : 'NoTestRun';
+          //  history.RequestedBy__c = UserInfo.getUserId();
+         //   history.DeploymentOptions__c = String.isNotEmpty(options.testLevel) 
+           //     ? options.testLevel 
+            //    : 'NoTestRun';
             history.RunTests__c = options.runTests != null ? options.runTests : false;
             
             insert history;

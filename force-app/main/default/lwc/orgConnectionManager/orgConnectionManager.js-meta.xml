@@ -9,9 +9,5 @@
         <target>lightning__HomePage</target>
         <target>lightning__RecordPage</target>
     </targets>
-    <targetConfigs>
-        <targetConfig targets="lightning__AppPage, lightning__HomePage">
-            <property name="title" type="String" label="Title" default="Org Connection Manager" description="The title of the component" />
-        </targetConfig>
-    </targetConfigs>
+   
 </LightningComponentBundle>

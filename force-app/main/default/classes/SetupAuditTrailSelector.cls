@@ -26,6 +26,66 @@ public class SetupAuditTrailSelector extends ApplicationSelector {
     }
     
     /**
+     * @description Select all audit trail records (with default limit for safety)
+     * @return List of all SetupAuditTrail__c records
+     */
+    public List<SetupAuditTrail__c> selectAll() {
+        return selectAll(10000); // Default limit to prevent governor issues
+    }
+    
+    /**
+     * @description Select all audit trail records with custom limit
+     * @param limitRows Maximum number of records to return
+     * @return List of SetupAuditTrail__c records
+     */
+    public List<SetupAuditTrail__c> selectAll(Integer limitRows) {
+        String query = buildQueryString(null, null);
+        
+        if (limitRows != null && limitRows > 0) {
+            query += ' LIMIT ' + limitRows;
+        }
+        
+        return Database.query(query);
+    }
+    
+    /**
+     * @description Select all audit trail records ordered by created date
+     * @param limitRows Maximum number of records to return
+     * @return List of SetupAuditTrail__c records ordered by CreatedDate__c DESC
+     */
+    public List<SetupAuditTrail__c> selectAllOrderByDate(Integer limitRows) {
+        String query = buildQueryString(null, null) + ' ORDER BY CreatedDate__c DESC';
+        
+        if (limitRows != null && limitRows > 0) {
+            query += ' LIMIT ' + limitRows;
+        }
+        
+        return Database.query(query);
+    }
+    
+    /**
+     * @description Select audit trails by list of IDs
+     * @param auditTrailIds List of audit trail IDs
+     * @return List of SetupAuditTrail__c records
+     */
+    public List<SetupAuditTrail__c> selectByIds(List<String> auditTrailIds) {
+        if (auditTrailIds == null || auditTrailIds.isEmpty()) {
+            return new List<SetupAuditTrail__c>();
+        }
+        
+        Set<Id> idSet = new Set<Id>();
+        for (String idStr : auditTrailIds) {
+            if (String.isNotBlank(idStr)) {
+                idSet.add((Id)idStr);
+            }
+        }
+        
+        String whereClause = 'Id IN :idSet';
+        String query = buildQueryString(null, whereClause);
+        return Database.query(query);
+    }
+    
+    /**
      * @description Select audit trails by date range
      */
     public List<SetupAuditTrail__c> selectByDateRange(DateTime startDate, DateTime endDate, Id orgConnectionId) {
