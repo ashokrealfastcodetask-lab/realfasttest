@@ -71,4 +71,15 @@ public class DeploymentPackageSelector extends ApplicationSelector {
         String whereClause = 'IsTemplate__c = true';
         return Database.query(buildQueryString(null, whereClause));
     }
+
+    /**
+     * @description Select deployment packages by record IDs
+     */
+    public List<DeploymentPackage__c> selectById(Set<Id> packageIds) {
+        if (packageIds == null || packageIds.isEmpty()) {
+            return new List<DeploymentPackage__c>();
+        }
+        String whereClause = 'Id IN :packageIds';
+        return Database.query(buildQueryString(null, whereClause));
+    }
 }
