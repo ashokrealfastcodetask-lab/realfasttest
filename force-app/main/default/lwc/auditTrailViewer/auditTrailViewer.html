@@ -2,10 +2,11 @@
     <lightning-card title="Audit Trail Viewer" icon-name="standard:log">
         <div slot="actions" style="display: flex; gap: 10px;">
             <lightning-button
-                label="Filters"
-                icon-name="utility:filterList"
-                onclick={handleToggleFilters}
-                variant="border-filled">
+                label="Sync Org"
+                icon-name="utility:sync"
+                onclick={handleSyncOrg}
+                variant="brand"
+                disabled={isLoading}>
             </lightning-button>
             <lightning-button
                 label="Refresh"
@@ -17,49 +18,88 @@
         </div>
 
         <!-- Filters Section -->
-        <template if:true={showFilters}>
-            <div class="slds-m-around_medium slds-box slds-box_x-small">
-                <div class="slds-grid slds-wrap slds-gap_medium">
-                    <div class="slds-size_1-of-3">
-                        <lightning-input
-                            type="date"
-                            label="Start Date"
-                            value={startDate}
-                            onchange={handleStartDateChange}>
-                        </lightning-input>
-                    </div>
-                    <div class="slds-size_1-of-3">
-                        <lightning-input
-                            type="date"
-                            label="End Date"
-                            value={endDate}
-                            onchange={handleEndDateChange}>
-                        </lightning-input>
-                    </div>
-                    <div class="slds-size_1-of-3">
-                        <lightning-input
-                            type="text"
-                            label="Org Connection"
-                            placeholder="Enter Org ID"
-                            value={selectedOrgConnection}
-                            onchange={handleOrgConnectionChange}>
-                        </lightning-input>
-                    </div>
+        <div class="slds-m-around_medium slds-box slds-box_x-small">
+            <div class="slds-grid slds-wrap slds-gap_medium">
+                <!-- Organization Filter -->
+                <div class="slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Organization"
+                        value={selectedOrgId}
+                        options={orgConnections}
+                        onchange={handleOrgChange}>
+                    </lightning-combobox>
                 </div>
-                <div class="slds-m-top_medium" style="display: flex; gap: 10px; justify-content: flex-end;">
+
+                <!-- Action Filter -->
+                <div class="slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Action"
+                        value={selectedAction}
+                        options={actionOptions}
+                        onchange={handleActionChange}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Metadata Type Filter -->
+                <div class="slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Metadata Type"
+                        value={selectedMetadataType}
+                        options={metadataTypeOptions}
+                        onchange={handleMetadataTypeChange}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Search Filter -->
+                <div class="slds-size_1-of-4">
+                    <lightning-input
+                        type="text"
+                        label="Search"
+                        placeholder="Component name..."
+                        value={searchTerm}
+                        onchange={handleSearchChange}>
+                    </lightning-input>
+                </div>
+            </div>
+
+            <!-- Date Range and Additional Filters -->
+            <div class="slds-grid slds-wrap slds-gap_medium slds-m-top_medium">
+                <div class="slds-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        label="Start Date"
+                        value={dateFrom}
+                        onchange={handleDateFromChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-size_1-of-4">
+                    <lightning-input
+                        type="date"
+                        label="End Date"
+                        value={dateTo}
+                        onchange={handleDateToChange}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-size_1-of-4" style="display: flex; align-items: flex-end;">
+                    <lightning-input
+                        type="checkbox"
+                        label="Processed Only"
+                        checked={showProcessedOnly}
+                        onchange={handleProcessedToggle}>
+                    </lightning-input>
+                </div>
+
+                <div class="slds-size_1-of-4" style="display: flex; gap: 10px; align-items: flex-end;">
                     <lightning-button
-                        label="Clear"
+                        label="Clear Filters"
                         onclick={handleClearFilters}
                         variant="neutral">
                     </lightning-button>
-                    <lightning-button
-                        label="Apply Filters"
-                        onclick={handleApplyFilters}
-                        variant="brand">
-                    </lightning-button>
                 </div>
             </div>
-        </template>
+        </div>
 
         <!-- Main Content -->
         <div class="slds-m-around_medium">
@@ -70,37 +110,82 @@
 
             <!-- Error Alert -->
             <template if:true={error}>
-                <lightning-alert
-                    variant="error"
-                    title="Error"
-                    message={error}
-                    closable
-                    onclose={handleClearFilters}>
-                </lightning-alert>
+                <div class="slds-m-bottom_medium">
+                    <lightning-alert
+                        variant="error"
+                        title="Error"
+                        message={error}
+                        closable>
+                    </lightning-alert>
+                </div>
             </template>
 
             <!-- Record Count -->
-            <template if:true={hasAuditTrails}>
+            <template if:true={hasRecords}>
                 <div class="slds-m-bottom_medium">
-                    <lightning-badge label={recordCount}></lightning-badge>
-                    <span class="slds-m-left_small">Records found</span>
+                    <span class="slds-text-title_bold">{recordInfo}</span>
+                </div>
+            </template>
+
+            <!-- Page Size Selector -->
+            <template if:true={hasRecords}>
+                <div class="slds-m-bottom_medium">
+                    <lightning-combobox
+                        label="Records per page"
+                        value={pageSize}
+                        options={pageSizeOptions}
+                        onchange={handlePageSizeChange}
+                        style="width: 150px;">
+                    </lightning-combobox>
                 </div>
             </template>
 
             <!-- Data Table -->
-            <template if:true={hasAuditTrails}>
+            <template if:true={hasRecords}>
                 <lightning-datatable
                     key-field="Id"
-                    data={auditTrails}
+                    data={paginatedRecords}
                     columns={columns}
                     hide-checkbox-column
-                    onrowaction={handleRowAction}
                     class="audit-trail-table">
                 </lightning-datatable>
             </template>
 
+            <!-- Pagination Controls -->
+            <template if:true={showPagination}>
+                <div class="slds-m-top_medium" style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+                    <span class="slds-text-body_small">{recordInfo}</span>
+                    <div style="display: flex; gap: 10px;">
+                        <lightning-button
+                            label="← Previous"
+                            onclick={handlePreviousPage}
+                            disabled={isFirstPage}
+                            variant="neutral">
+                        </lightning-button>
+                        <lightning-button
+                            label="Next →"
+                            onclick={handleNextPage}
+                            disabled={isLastPage}
+                            variant="neutral">
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Process Selected Button -->
+            <template if:true={hasSelection}>
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        label="Process Selected"
+                        onclick={handleProcessSelected}
+                        variant="brand"
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+            </template>
+
             <!-- No Data Message -->
-            <template if:false={hasAuditTrails}>
+            <template if:false={hasRecords}>
                 <div class="slds-align_absolute-center slds-m-vertical_large">
                     <lightning-icon
                         icon-name="utility:inbox"

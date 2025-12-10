@@ -193,6 +193,8 @@ export default class AuditTrailViewer extends LightningElement {
         this.isLoading = true;
         this.error = undefined;
         
+        console.log('loadAuditTrails called');
+        
         const params = {
             orgConnectionId: this.selectedOrgId || null,
             action: this.selectedAction || null,
@@ -203,16 +205,25 @@ export default class AuditTrailViewer extends LightningElement {
             processedOnly: this.showProcessedOnly
         };
         
+        console.log('Filter params:', params);
+        
         getAuditTrails(params)
             .then(result => {
-                this.auditTrails = result.map(trail => ({
-                    ...trail,
-                    orgName: trail.OrgConnection__r ? trail.OrgConnection__r.OrgName__c : ''
-                }));
+                console.log('Audit trails received:', result);
+                if (result && result.length > 0) {
+                    this.auditTrails = result.map(trail => ({
+                        ...trail,
+                        orgName: trail.OrgConnection__r ? trail.OrgConnection__r.OrgName__c : ''
+                    }));
+                } else {
+                    this.auditTrails = [];
+                    console.log('No audit trails returned');
+                }
                 this.applyFilters();
                 this.isLoading = false;
             })
             .catch(error => {
+                console.error('Error loading audit trails:', error);
                 this.showError('Error loading audit trails', error);
                 this.isLoading = false;
             });

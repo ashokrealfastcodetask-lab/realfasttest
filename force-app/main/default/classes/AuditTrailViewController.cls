@@ -45,7 +45,7 @@ public with sharing class AuditTrailViewController {
         Boolean processedOnly
     ) {
         try {
-            String query = 'SELECT Id, CreatedDate__c, Action__c, Section__c, ComponentName__c, MetadataType__c, Display__c, CreatedByName__c, IsProcessed__c, OrgConnection__c FROM SetupAuditTrail__c';
+            String query = 'SELECT Id, CreatedDate__c, Action__c, Section__c, ComponentName__c, MetadataType__c, Display__c, CreatedByName__c, IsProcessed__c, OrgConnection__c, OrgConnection__r.OrgName__c FROM SetupAuditTrail__c';
             List<String> whereConditions = new List<String>();
             
             if (String.isNotBlank(orgConnectionId)) {
@@ -74,8 +74,12 @@ public with sharing class AuditTrailViewController {
             }
             
             query += ' ORDER BY CreatedDate__c DESC LIMIT 10000';
-            return Database.query(query);
+            System.debug('Query: ' + query);
+            List<SetupAuditTrail__c> results = Database.query(query);
+            System.debug('Results count: ' + results.size());
+            return results;
         } catch (Exception e) {
+            System.debug('Error: ' + e.getMessage() + ' StackTrace: ' + e.getStackTraceString());
             throw new AuraHandledException('Error fetching audit trails: ' + e.getMessage());
         }
     }
