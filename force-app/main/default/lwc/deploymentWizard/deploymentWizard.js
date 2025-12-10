@@ -119,6 +119,20 @@ export default class DeploymentWizard extends LightningElement {
      */
     handleMetadataTypeChange(event) {
         this.selectedMetadataTypes = event.target.value;
+        
+        // Auto-populate selectedComponents with selected metadata types as components
+        // In production, this would fetch actual components from the org
+        if (this.selectedMetadataTypes && this.selectedMetadataTypes.length > 0) {
+            this.selectedComponents = this.selectedMetadataTypes.map((type, index) => ({
+                id: type + '_' + (index + 1),
+                metadataType: type,
+                componentName: type + '_' + (index + 1),
+                displayName: type,
+                status: 'Selected'
+            }));
+        } else {
+            this.selectedComponents = [];
+        }
     }
     
     /**
@@ -182,6 +196,13 @@ export default class DeploymentWizard extends LightningElement {
     handleCreateAndDeploy() {
         this.isLoading = true;
         this.error = '';
+        
+        // Validate that components are selected
+        if (!this.selectedComponents || this.selectedComponents.length === 0) {
+            this.isLoading = false;
+            this.showError('Validation Error', 'At least one component must be selected. Please go back to Step 2 and select metadata types.');
+            return;
+        }
         
         // Create package components
         const components = this.selectedComponents.map(comp => ({

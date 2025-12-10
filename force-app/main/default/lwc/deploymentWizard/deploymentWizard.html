@@ -67,8 +67,19 @@
                     onchange={handleMetadataTypeChange}
                     class="slds-m-bottom_small"></lightning-dual-listbox>
                 
-                <p class="slds-text-body_small slds-text-color_weak">
-                    Select the components to include in this deployment package.
+                <template if:true={selectedComponents}>
+                    <div class="slds-m-top_medium">
+                        <h4 class="slds-text-title_small">Selected Components ({selectedComponents.length})</h4>
+                        <lightning-datatable
+                            key-field="componentName"
+                            data={selectedComponents}
+                            columns={componentColumns}
+                            hide-checkbox-column></lightning-datatable>
+                    </div>
+                </template>
+                
+                <p class="slds-text-body_small slds-text-color_weak slds-m-top_medium">
+                    Select the metadata types to include in this deployment package.
                 </p>
             </div>
         </template>

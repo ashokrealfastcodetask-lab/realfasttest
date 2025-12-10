@@ -50,21 +50,33 @@ public with sharing class DeploymentWizardController {
         List<ComponentSelection> selectedComponents
     ) {
         try {
-            if (String.isBlank(packageName) || selectedComponents.isEmpty()) {
-                throw new IllegalArgumentException('Package name and components are required');
+            // Validate input parameters
+            if (String.isBlank(packageName)) {
+                throw new IllegalArgumentException('Package name is required');
+            }
+            
+            if (selectedComponents == null) {
+                throw new IllegalArgumentException('At least one component must be selected');
+            }
+            
+            if (selectedComponents.isEmpty()) {
+                throw new IllegalArgumentException('At least one component must be selected');
+            }
+            
+            if (String.isBlank(targetOrgId)) {
+                throw new IllegalArgumentException('Target org is required');
             }
             
             PackageWrapper result = new PackageWrapper();
             
             // Create deployment package
             DeploymentPackage__c deployPkg = new DeploymentPackage__c();
-         //   deployPkg.Name = packageName;
-            deployPkg.Description__c = description;
+            deployPkg.PackageName__c = packageName;
+            deployPkg.Version__c = '1.0';
+            deployPkg.APIVersion__c = 64.0;
             deployPkg.SourceOrg__c = String.isNotBlank(sourceOrgId) ? sourceOrgId : null;
             deployPkg.TargetOrg__c = targetOrgId;
             deployPkg.Status__c = 'Draft';
-          //  deployPkg.CreatedBy__c = UserInfo.getUserId();
-            deployPkg.ComponentCount__c = selectedComponents.size();
             
             insert deployPkg;
             
@@ -89,7 +101,7 @@ public with sharing class DeploymentWizardController {
             insert components;
             
             result.packageId = deployPkg.Id;
-            result.packageName = deployPkg.Name;
+            result.packageName = packageName;
             result.componentCount = components.size();
             result.status = deployPkg.Status__c;
             result.success = true;
@@ -160,7 +172,7 @@ public with sharing class DeploymentWizardController {
             ValidationResult result = new ValidationResult();
             
             DeploymentPackage__c pkg = [
-                SELECT Id, Name, Status__c, ComponentCount__c, TargetOrg__c
+                SELECT Id, Name, Status__c, TargetOrg__c
                 FROM DeploymentPackage__c
                 WHERE Id = :packageId
                 LIMIT 1
@@ -168,8 +180,14 @@ public with sharing class DeploymentWizardController {
             
             List<String> issues = new List<String>();
             
-            // Validation checks
-            if (pkg.ComponentCount__c == 0) {
+            // Check if package has any components
+            Integer componentCount = [
+                SELECT COUNT()
+                FROM PackageComponent__c
+                WHERE DeploymentPackage__c = :packageId AND IsIncluded__c = true
+            ];
+            
+            if (componentCount == 0) {
                 issues.add('Package contains no components');
             }
             
@@ -177,13 +195,13 @@ public with sharing class DeploymentWizardController {
                 issues.add('Target org must be specified');
             }
             
-            List<PackageComponent__c> components = [
+            List<PackageComponent__c> excludedComponents = [
                 SELECT Id, ComponentName__c
                 FROM PackageComponent__c
                 WHERE DeploymentPackage__c = :packageId AND IsIncluded__c = false
             ];
             
-            if (components.size() > 0) {
+            if (excludedComponents.size() > 0) {
                 issues.add('Some components are marked as excluded');
             }
             
@@ -284,13 +302,25 @@ public with sharing class DeploymentWizardController {
     @AuraEnabled
     public static String updateComponentStatus(String componentId, Boolean isIncluded) {
         try {
-            PackageComponent__c comp = new PackageComponent__c();
-            comp.Id = componentId;
-            comp.IsIncluded__c = isIncluded;
+            if (String.isBlank(componentId)) {
+                throw new IllegalArgumentException('Component ID is required');
+            }
             
+            // Query the component to ensure it exists
+            PackageComponent__c comp = [
+                SELECT Id, IsIncluded__c
+                FROM PackageComponent__c
+                WHERE Id = :componentId
+                LIMIT 1
+            ];
+            
+            // Update the inclusion status
+            comp.IsIncluded__c = isIncluded;
             update comp;
             
             return 'Component status updated successfully';
+        } catch (QueryException qe) {
+            throw new AuraHandledException('Component not found with ID: ' + componentId);
         } catch (Exception e) {
             throw new AuraHandledException('Error updating component status: ' + e.getMessage());
         }
