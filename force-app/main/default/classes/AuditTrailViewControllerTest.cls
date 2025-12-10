@@ -1,106 +1,207 @@
-/**
- * @description Test class for AuditTrailViewController (Selector)
- * Provides comprehensive test coverage for audit trail selector methods
- * Note: The class is named AuditTrailViewController but functions as a selector
- */
-@isTest
-private class AuditTrailViewControllerTest {
-    
-    /**
-     * @description Creates test data for selector tests
-     */
-    @TestSetup
-    static void setupTestData() {
-        // Create test org connections
-        List<OrgConnection__c> orgs = new List<OrgConnection__c>();
+/**/**
+
+ * @description Test class for AuditTrailViewController Controller * @description Test class for AuditTrailViewController Controller
+
+ * Tests only the @AuraEnabled methods exposed to LWC * Tests only the @AuraEnabled methods exposed to LWC
+
+ */ */
+
+@isTest@isTest
+
+private class AuditTrailViewControllerTest {private class AuditTrailViewControllerTest {
+
         
-        OrgConnection__c org1 = new OrgConnection__c(
-            OrgName__c = 'Test Org 1',
-            OrgType__c = 'Production',
-            InstanceURL__c = 'https://test1.salesforce.com',
-            IsActive__c = true,
-            NamedCredential__c = 'TestCred1'
-        );
-        orgs.add(org1);
+
+    @TestSetup    /**
+
+    static void setupTestData() {     * @description Create test data for controller tests
+
+        OrgConnection__c org = new OrgConnection__c(     */
+
+            OrgName__c = 'Test Org',    @TestSetup
+
+            OrgType__c = 'Production',    static void setupTestData() {
+
+            InstanceURL__c = 'https://test.salesforce.com',        // Create test org connections
+
+            IsActive__c = true        List<OrgConnection__c> orgs = new List<OrgConnection__c>();
+
+        );        
+
+        insert org;        OrgConnection__c org1 = new OrgConnection__c(
+
+                    OrgName__c = 'Test Org 1',
+
+        List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();            OrgType__c = 'Production',
+
+        for (Integer i = 0; i < 5; i++) {            InstanceURL__c = 'https://test1.salesforce.com',
+
+            trails.add(new SetupAuditTrail__c(            IsActive__c = true,
+
+                Action__c = 'Created',            NamedCredential__c = 'TestCred1'
+
+                Section__c = 'Apex',        );
+
+                CreatedById__c = UserInfo.getUserId(),        orgs.add(org1);
+
+                CreatedByName__c = UserInfo.getName(),        
+
+                CreatedDate__c = DateTime.now().addDays(-i),        OrgConnection__c org2 = new OrgConnection__c(
+
+                Display__c = 'Test ' + i,            OrgName__c = 'Test Org 2',
+
+                OrgConnection__c = org.Id,            OrgType__c = 'Sandbox',
+
+                MetadataType__c = 'ApexClass',            InstanceURL__c = 'https://test2.salesforce.com',
+
+                ComponentName__c = 'TestClass' + i,            IsActive__c = true,
+
+                IsProcessed__c = false            NamedCredential__c = 'TestCred2'
+
+            ));        );
+
+        }        orgs.add(org2);
+
+        insert trails;        
+
+    }        insert orgs;
+
+            
+
+    @isTest        // Create test audit trail records
+
+    static void testGetOrgConnections() {        List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();
+
+        Test.startTest();        
+
+        List<OrgConnection__c> orgs = AuditTrailViewController.getOrgConnections();        // Records for org1 - processed and unprocessed
+
+        Test.stopTest();        for (Integer i = 0; i < 15; i++) {
+
+                    SetupAuditTrail__c trail = new SetupAuditTrail__c(
+
+        System.assertNotEquals(null, orgs);                Action__c = 'Created',
+
+        System.assertEquals(1, orgs.size());                Section__c = 'Apex Classes',
+
+    }                CreatedById__c = UserInfo.getUserId(),
+
+                    CreatedByName__c = UserInfo.getName(),
+
+    @isTest                CreatedDate__c = DateTime.now().addDays(-i),
+
+    static void testGetAuditTrails() {                Display__c = 'Test Display Org1 ' + i,
+
+        Test.startTest();                OrgConnection__c = org1.Id,
+
+        List<SetupAuditTrail__c> trails = AuditTrailViewController.getAuditTrails(                MetadataType__c = i < 8 ? 'ApexClass' : 'ApexTrigger',
+
+            null, null, null, null, null, null, null                ComponentName__c = 'TestComponent' + i,
+
+        );                IsProcessed__c = i < 5
+
+        Test.stopTest();            );
+
+                    trails.add(trail);
+
+        System.assertNotEquals(null, trails);        }
+
+        System.assertEquals(5, trails.size());        
+
+    }        // Records for org2
+
+            for (Integer i = 0; i < 10; i++) {
+
+    @isTest            SetupAuditTrail__c trail = new SetupAuditTrail__c(
+
+    static void testGetMetadataTypes() {                Action__c = 'Modified',
+
+        Test.startTest();                Section__c = 'Visualforce Pages',
+
+        List<String> types = AuditTrailViewController.getMetadataTypes();                CreatedById__c = UserInfo.getUserId(),
+
+        Test.stopTest();                CreatedByName__c = UserInfo.getName(),
+
+                        CreatedDate__c = DateTime.now().addDays(-i - 5),
+
+        System.assertNotEquals(null, types);                Display__c = 'Test Display Org2 ' + i,
+
+    }                OrgConnection__c = org2.Id,
+
+                    MetadataType__c = 'VisualforcePage',
+
+    @isTest                ComponentName__c = 'TestPage' + i,
+
+    static void testGetActions() {                IsProcessed__c = false
+
+        Test.startTest();            );
+
+        List<String> actions = AuditTrailViewController.getActions();            trails.add(trail);
+
+        Test.stopTest();        }
+
+                
+
+        System.assertNotEquals(null, actions);        insert trails;
+
+        System.assert(actions.size() > 0);    }
+
+    }    
+
+        /**
+
+    @isTest     * @description Test getSObjectType method
+
+    static void testProcessAuditTrails() {     */
+
+        List<SetupAuditTrail__c> trails = [SELECT Id FROM SetupAuditTrail__c LIMIT 2];    @isTest
+
+        List<String> trailIds = new List<String>();    static void testGetSObjectType() {
+
+        for (SetupAuditTrail__c trail : trails) {        AuditTrailViewController selector = new AuditTrailViewController();
+
+            trailIds.add(trail.Id);        
+
+        }        Test.startTest();
+
+                Schema.SObjectType result = selector.getSObjectType();
+
+        Test.startTest();        Test.stopTest();
+
+        Integer result = AuditTrailViewController.processAuditTrails(trailIds);        
+
+        Test.stopTest();        System.assertNotEquals(null, result, 'SObjectType should not be null');
+
+                System.assertEquals(SetupAuditTrail__c.SObjectType, result, 
+
+        System.assertEquals(2, result);                           'Should return SetupAuditTrail__c SObjectType');
+
+    }    }
+
         
-        OrgConnection__c org2 = new OrgConnection__c(
-            OrgName__c = 'Test Org 2',
-            OrgType__c = 'Sandbox',
-            InstanceURL__c = 'https://test2.salesforce.com',
-            IsActive__c = true,
-            NamedCredential__c = 'TestCred2'
-        );
-        orgs.add(org2);
-        
-        insert orgs;
-        
-        // Create test audit trail records
-        List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();
-        
-        // Records for org1 - processed and unprocessed
-        for (Integer i = 0; i < 15; i++) {
-            SetupAuditTrail__c trail = new SetupAuditTrail__c(
-                Action__c = 'Created',
-                Section__c = 'Apex Classes',
-                CreatedById__c = UserInfo.getUserId(),
-                CreatedByName__c = UserInfo.getName(),
-                CreatedDate__c = DateTime.now().addDays(-i),
-                Display__c = 'Test Display Org1 ' + i,
-                OrgConnection__c = org1.Id,
-                MetadataType__c = i < 8 ? 'ApexClass' : 'ApexTrigger',
-                ComponentName__c = 'TestComponent' + i,
-                IsProcessed__c = i < 5
-            );
-            trails.add(trail);
-        }
-        
-        // Records for org2
-        for (Integer i = 0; i < 10; i++) {
-            SetupAuditTrail__c trail = new SetupAuditTrail__c(
-                Action__c = 'Modified',
-                Section__c = 'Visualforce Pages',
-                CreatedById__c = UserInfo.getUserId(),
-                CreatedByName__c = UserInfo.getName(),
-                CreatedDate__c = DateTime.now().addDays(-i - 5),
-                Display__c = 'Test Display Org2 ' + i,
-                OrgConnection__c = org2.Id,
-                MetadataType__c = 'VisualforcePage',
-                ComponentName__c = 'TestPage' + i,
-                IsProcessed__c = false
-            );
-            trails.add(trail);
-        }
-        
-        insert trails;
-    }
-    
-    /**
-     * @description Test getSObjectType method
-     */
-    @isTest
-    static void testGetSObjectType() {
-        AuditTrailViewController selector = new AuditTrailViewController();
-        
-        Test.startTest();
-        Schema.SObjectType result = selector.getSObjectType();
-        Test.stopTest();
-        
-        System.assertNotEquals(null, result, 'SObjectType should not be null');
-        System.assertEquals(SetupAuditTrail__c.SObjectType, result, 
-                           'Should return SetupAuditTrail__c SObjectType');
-    }
-    
-    /**
-     * @description Test getSObjectFieldList method
-     */
-    @isTest
-    static void testGetSObjectFieldList() {
-        AuditTrailViewController selector = new AuditTrailViewController();
-        
-        Test.startTest();
-        List<Schema.SObjectField> fields = selector.getSObjectFieldList();
-        Test.stopTest();
-        
+
+    @isTest    /**
+
+    static void testSyncOrgAuditTrails() {     * @description Test getSObjectFieldList method
+
+        OrgConnection__c org = [SELECT Id FROM OrgConnection__c LIMIT 1];     */
+
+            @isTest
+
+        Test.startTest();    static void testGetSObjectFieldList() {
+
+        Integer result = AuditTrailViewController.syncOrgAuditTrails(org.Id);        AuditTrailViewController selector = new AuditTrailViewController();
+
+        Test.stopTest();        
+
+                Test.startTest();
+
+        System.assertNotEquals(null, result);        List<Schema.SObjectField> fields = selector.getSObjectFieldList();
+
+    }        Test.stopTest();
+
+}        
+
         System.assertNotEquals(null, fields, 'Field list should not be null');
         System.assert(fields.size() > 0, 'Should return at least one field');
         System.assert(fields.contains(SetupAuditTrail__c.Id), 'Should contain Id field');

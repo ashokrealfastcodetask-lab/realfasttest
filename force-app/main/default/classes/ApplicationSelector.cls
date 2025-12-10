@@ -46,9 +46,11 @@ public abstract class ApplicationSelector {
         }
 
         String aliasPrefix = String.isNotBlank(alias) ? alias + '.' : '';
-        String selectClause = 'SELECT ' + String.join(
-            fieldApiNames.stream().map((String n) -> aliasPrefix + n).toList(), ', '
-        );
+        List<String> selectFields = new List<String>();
+        for (String fieldName : fieldApiNames) {
+            selectFields.add(aliasPrefix + fieldName);
+        }
+        String selectClause = 'SELECT ' + String.join(selectFields, ', ');
 
         String fromClause = ' FROM ' + sobjectName;
         if (String.isNotBlank(alias)) {
