@@ -32,7 +32,7 @@ public class DeploymentPackageSelector extends ApplicationSelector {
      * @description Select all packages where Status__c = 'Ready'
      */
     @AuraEnabled(cacheable=true)
-    public  List<DeploymentPackage__c> getselectActive() {
+    public static List<DeploymentPackage__c> selectActive() {
         String whereClause = 'Status__c = \'Ready\'';
         return Database.query(buildQueryString(null, whereClause));
     }
