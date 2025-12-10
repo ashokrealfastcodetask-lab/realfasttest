@@ -22,26 +22,50 @@ public with sharing class DeploymentMonitorController {
         Integer limitRows
     ) {
         try {
-            String whereClause = 'WHERE 1=1';
+            String whereClause = '';
             
             if (String.isNotBlank(statusFilter)) {
-                whereClause += ' AND DeploymentStatus__c = \'' + String.escapeSingleQuotes(statusFilter) + '\'';
+                if (String.isBlank(whereClause)) {
+                    whereClause = 'WHERE ';
+                } else {
+                    whereClause += ' AND ';
+                }
+                whereClause += 'DeploymentStatus__c = \'' + String.escapeSingleQuotes(statusFilter) + '\'';
             }
             
             if (String.isNotBlank(orgConnectionId)) {
-                whereClause += ' AND TargetOrg__c = \'' + String.escapeSingleQuotes(orgConnectionId) + '\'';
+                if (String.isBlank(whereClause)) {
+                    whereClause = 'WHERE ';
+                } else {
+                    whereClause += ' AND ';
+                }
+                whereClause += 'TargetOrg__c = \'' + String.escapeSingleQuotes(orgConnectionId) + '\'';
             }
             
             if (String.isNotBlank(fromDate) && String.isNotBlank(toDate)) {
-                whereClause += ' AND CreatedDate >= ' + fromDate + ' AND CreatedDate <= ' + toDate;
+                // Handle dates - ensure they're properly formatted for SOQL
+                String escapedFromDate = String.escapeSingleQuotes(fromDate);
+                String escapedToDate = String.escapeSingleQuotes(toDate);
+                
+                if (String.isBlank(whereClause)) {
+                    whereClause = 'WHERE ';
+                } else {
+                    whereClause += ' AND ';
+                }
+                whereClause += 'CreatedDate >= ' + escapedFromDate + ' AND CreatedDate <= ' + escapedToDate;
             }
             
             String query = 'SELECT Id, Name, DeploymentPackage__c, SourceOrg__c, TargetOrg__c, ' +
                           'DeploymentStatus__c, ' +
                           'RunTests__c, TestsExecuted__c, TestsPassed__c, TestsFailed__c, ' +
                           'CreatedDate, LastModifiedDate ' +
-                          'FROM DeploymentHistory__c ' + whereClause + 
-                          ' ORDER BY CreatedDate DESC';
+                          'FROM DeploymentHistory__c ';
+            
+            if (String.isNotBlank(whereClause)) {
+                query += whereClause;
+            }
+            
+            query += ' ORDER BY CreatedDate DESC';
             
             if (limitRows != null && limitRows > 0) {
                 query += ' LIMIT ' + limitRows;
