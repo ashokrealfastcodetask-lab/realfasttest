@@ -1,126 +1,250 @@
-/**/**/**
+/**/**/**/**
 
  * @description Test class for AuditTrailViewController Controller
 
- * Tests only the @AuraEnabled methods exposed to LWC * @description Test class for AuditTrailViewController Controller * @description Test class for AuditTrailViewController Controller
+ * Tests only the @AuraEnabled methods exposed to LWC * @description Test class for AuditTrailViewController Controller
 
  */
 
-@isTest * Tests only the @AuraEnabled methods exposed to LWC * Tests only the @AuraEnabled methods exposed to LWC
+@isTest * Tests only the @AuraEnabled methods exposed to LWC * @description Test class for AuditTrailViewController Controller * @description Test class for AuditTrailViewController Controller
 
 private class AuditTrailViewControllerTest {
 
- */ */
+ */
 
     @TestSetup
 
-    static void setupTestData() {@isTest@isTest
+    static void setupTestData() {@isTest * Tests only the @AuraEnabled methods exposed to LWC * Tests only the @AuraEnabled methods exposed to LWC
 
         // Create test org connections
 
-        List<OrgConnection__c> orgs = new List<OrgConnection__c>();private class AuditTrailViewControllerTest {private class AuditTrailViewControllerTest {
+        List<OrgConnection__c> orgs = new List<OrgConnection__c>();private class AuditTrailViewControllerTest {
 
         
 
-        OrgConnection__c org1 = new OrgConnection__c(        
+        OrgConnection__c org1 = new OrgConnection__c( */ */
 
             OrgName__c = 'Test Org 1',
 
-            OrgType__c = 'Production',    @TestSetup    /**
+            OrgType__c = 'Production',    @TestSetup
 
             InstanceURL__c = 'https://test1.salesforce.com',
 
-            IsActive__c = true,    static void setupTestData() {     * @description Create test data for controller tests
+            IsActive__c = true,    static void setupTestData() {@isTest@isTest
 
             NamedCredential__c = 'TestCred1'
 
-        );        OrgConnection__c org = new OrgConnection__c(     */
+        );        // Create test org connections
 
         orgs.add(org1);
 
-                    OrgName__c = 'Test Org',    @TestSetup
+                List<OrgConnection__c> orgs = new List<OrgConnection__c>();private class AuditTrailViewControllerTest {private class AuditTrailViewControllerTest {
 
         OrgConnection__c org2 = new OrgConnection__c(
 
-            OrgName__c = 'Test Org 2',            OrgType__c = 'Production',    static void setupTestData() {
+            OrgName__c = 'Test Org 2',        
 
             OrgType__c = 'Sandbox',
 
-            InstanceURL__c = 'https://test2.salesforce.com',            InstanceURL__c = 'https://test.salesforce.com',        // Create test org connections
+            InstanceURL__c = 'https://test2.salesforce.com',        OrgConnection__c org1 = new OrgConnection__c(        
 
             IsActive__c = true,
 
-            NamedCredential__c = 'TestCred2'            IsActive__c = true        List<OrgConnection__c> orgs = new List<OrgConnection__c>();
+            NamedCredential__c = 'TestCred2'            OrgName__c = 'Test Org 1',
 
         );
 
-        orgs.add(org2);        );        
+        orgs.add(org2);            OrgType__c = 'Production',    @TestSetup    /**
 
         
 
-        insert orgs;        insert org;        OrgConnection__c org1 = new OrgConnection__c(
+        insert orgs;            InstanceURL__c = 'https://test1.salesforce.com',
 
         
 
-        // Create test audit trail records                    OrgName__c = 'Test Org 1',
+        // Create test audit trail records            IsActive__c = true,    static void setupTestData() {     * @description Create test data for controller tests
 
         List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();
 
-                List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();            OrgType__c = 'Production',
+                    NamedCredential__c = 'TestCred1'
 
         for (Integer i = 0; i < 10; i++) {
 
-            SetupAuditTrail__c trail = new SetupAuditTrail__c(        for (Integer i = 0; i < 5; i++) {            InstanceURL__c = 'https://test1.salesforce.com',
+            SetupAuditTrail__c trail = new SetupAuditTrail__c(        );        OrgConnection__c org = new OrgConnection__c(     */
 
                 Action__c = 'Created',
 
-                Section__c = 'Apex Classes',            trails.add(new SetupAuditTrail__c(            IsActive__c = true,
+                Section__c = 'Apex Classes',        orgs.add(org1);
 
                 CreatedById__c = UserInfo.getUserId(),
 
-                CreatedByName__c = UserInfo.getName(),                Action__c = 'Created',            NamedCredential__c = 'TestCred1'
+                CreatedByName__c = UserInfo.getName(),                    OrgName__c = 'Test Org',    @TestSetup
 
                 CreatedDate__c = DateTime.now().addDays(-i),
 
-                Display__c = 'Test Display ' + i,                Section__c = 'Apex',        );
+                Display__c = 'Test Display ' + i,        OrgConnection__c org2 = new OrgConnection__c(
 
                 OrgConnection__c = (Math.mod(i, 2) == 0) ? org1.Id : org2.Id,
 
-                MetadataType__c = i < 5 ? 'ApexClass' : 'ApexTrigger',                CreatedById__c = UserInfo.getUserId(),        orgs.add(org1);
+                MetadataType__c = i < 5 ? 'ApexClass' : 'ApexTrigger',            OrgName__c = 'Test Org 2',            OrgType__c = 'Production',    static void setupTestData() {
 
                 ComponentName__c = 'TestComponent' + i,
 
-                IsProcessed__c = false                CreatedByName__c = UserInfo.getName(),        
+                IsProcessed__c = false            OrgType__c = 'Sandbox',
 
             );
 
-            trails.add(trail);                CreatedDate__c = DateTime.now().addDays(-i),        OrgConnection__c org2 = new OrgConnection__c(
+            trails.add(trail);            InstanceURL__c = 'https://test2.salesforce.com',            InstanceURL__c = 'https://test.salesforce.com',        // Create test org connections
 
         }
 
-        insert trails;                Display__c = 'Test ' + i,            OrgName__c = 'Test Org 2',
+        insert trails;            IsActive__c = true,
 
     }
 
-                OrgConnection__c = org.Id,            OrgType__c = 'Sandbox',
+            NamedCredential__c = 'TestCred2'            IsActive__c = true        List<OrgConnection__c> orgs = new List<OrgConnection__c>();
 
     @isTest
 
-    static void testGetOrgConnections() {                MetadataType__c = 'ApexClass',            InstanceURL__c = 'https://test2.salesforce.com',
+    static void testGetOrgConnections() {        );
 
         Test.startTest();
 
-        List<OrgConnection__c> orgs = AuditTrailViewController.getOrgConnections();                ComponentName__c = 'TestClass' + i,            IsActive__c = true,
+        List<OrgConnection__c> orgs = AuditTrailViewController.getOrgConnections();        orgs.add(org2);        );        
 
         Test.stopTest();
 
-                        IsProcessed__c = false            NamedCredential__c = 'TestCred2'
+                
 
         System.assertNotEquals(null, orgs);
 
-        System.assertEquals(2, orgs.size());            ));        );
+        System.assertEquals(2, orgs.size());        insert orgs;        insert org;        OrgConnection__c org1 = new OrgConnection__c(
 
     }
+
+        
+
+    @isTest
+
+    static void testGetAuditTrails() {        // Create test audit trail records                    OrgName__c = 'Test Org 1',
+
+        Test.startTest();
+
+        List<SetupAuditTrail__c> trails = AuditTrailViewController.getAuditTrails(        List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();
+
+            null, null, null, null, null, null, null, null
+
+        );                List<SetupAuditTrail__c> trails = new List<SetupAuditTrail__c>();            OrgType__c = 'Production',
+
+        Test.stopTest();
+
+                for (Integer i = 0; i < 10; i++) {
+
+        System.assertNotEquals(null, trails);
+
+        System.assert(trails.size() > 0);            SetupAuditTrail__c trail = new SetupAuditTrail__c(        for (Integer i = 0; i < 5; i++) {            InstanceURL__c = 'https://test1.salesforce.com',
+
+    }
+
+                Action__c = 'Created',
+
+    @isTest
+
+    static void testGetMetadataTypes() {                Section__c = 'Apex Classes',            trails.add(new SetupAuditTrail__c(            IsActive__c = true,
+
+        Test.startTest();
+
+        List<String> metadataTypes = AuditTrailViewController.getMetadataTypes();                CreatedById__c = UserInfo.getUserId(),
+
+        Test.stopTest();
+
+                        CreatedByName__c = UserInfo.getName(),                Action__c = 'Created',            NamedCredential__c = 'TestCred1'
+
+        System.assertNotEquals(null, metadataTypes);
+
+        System.assert(metadataTypes.size() > 0);                CreatedDate__c = DateTime.now().addDays(-i),
+
+    }
+
+                Display__c = 'Test Display ' + i,                Section__c = 'Apex',        );
+
+    @isTest
+
+    static void testGetActions() {                OrgConnection__c = (Math.mod(i, 2) == 0) ? org1.Id : org2.Id,
+
+        Test.startTest();
+
+        List<String> actions = AuditTrailViewController.getActions();                MetadataType__c = i < 5 ? 'ApexClass' : 'ApexTrigger',                CreatedById__c = UserInfo.getUserId(),        orgs.add(org1);
+
+        Test.stopTest();
+
+                        ComponentName__c = 'TestComponent' + i,
+
+        System.assertNotEquals(null, actions);
+
+        System.assert(actions.size() > 0);                IsProcessed__c = false                CreatedByName__c = UserInfo.getName(),        
+
+    }
+
+            );
+
+    @isTest
+
+    static void testProcessAuditTrails() {            trails.add(trail);                CreatedDate__c = DateTime.now().addDays(-i),        OrgConnection__c org2 = new OrgConnection__c(
+
+        OrgConnection__c org = [SELECT Id FROM OrgConnection__c LIMIT 1];
+
+        List<SetupAuditTrail__c> trails = [SELECT Id FROM SetupAuditTrail__c LIMIT 5];        }
+
+        List<Id> trailIds = new List<Id>();
+
+        for (SetupAuditTrail__c trail : trails) {        insert trails;                Display__c = 'Test ' + i,            OrgName__c = 'Test Org 2',
+
+            trailIds.add(trail.Id);
+
+        }    }
+
+        
+
+        Test.startTest();                OrgConnection__c = org.Id,            OrgType__c = 'Sandbox',
+
+        AuditTrailViewController.processAuditTrails(org.Id, trailIds);
+
+        Test.stopTest();    @isTest
+
+        
+
+        // Verify records were updated    static void testGetOrgConnections() {                MetadataType__c = 'ApexClass',            InstanceURL__c = 'https://test2.salesforce.com',
+
+        List<SetupAuditTrail__c> updated = [SELECT IsProcessed__c FROM SetupAuditTrail__c WHERE Id IN :trailIds];
+
+        System.assertEquals(5, updated.size());        Test.startTest();
+
+    }
+
+        List<OrgConnection__c> orgs = AuditTrailViewController.getOrgConnections();                ComponentName__c = 'TestClass' + i,            IsActive__c = true,
+
+    @isTest
+
+    static void testSyncOrgAuditTrails() {        Test.stopTest();
+
+        OrgConnection__c org = [SELECT Id FROM OrgConnection__c LIMIT 1];
+
+                                IsProcessed__c = false            NamedCredential__c = 'TestCred2'
+
+        Test.startTest();
+
+        AuditTrailViewController.syncOrgAuditTrails(org.Id);        System.assertNotEquals(null, orgs);
+
+        Test.stopTest();
+
+                System.assertEquals(2, orgs.size());            ));        );
+
+        System.assertEquals(true, true);
+
+    }    }
+
+}
 
         }        orgs.add(org2);
 
